@@ -19,7 +19,7 @@ interface AsaasPaymentResponse {
 interface PaymentBody {
   customer: string;
   value: number;
-  dueDate: string;
+  dueDate: string; // Mantemos como string
   billingType: BillingType;
 }
 
@@ -30,11 +30,13 @@ export async function createAsaasPayment(
   billingType: BillingType = "BOLETO",
 ): Promise<string> {
   try {
+    // Formatando a data corretamente para string ISO (YYYY-MM-DD)
     const formattedDueDate = dueDate.toISOString().split("T")[0];
+
     const body: PaymentBody = {
       customer: customerId,
       value,
-      dueDate: formattedDueDate,
+      dueDate: formattedDueDate, // Passando como string formatada
       billingType,
     };
 
