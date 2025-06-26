@@ -1,4 +1,3 @@
-/* eslint-disable */
 declare module "pagseguro-payment" {
   export default class PagSeguroPayment {
     constructor(credentials: {

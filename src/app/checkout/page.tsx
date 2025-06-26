@@ -1,7 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { CartItemType } from "../types";
 
 export default function CheckoutPage() {
   const searchParams = useSearchParams();
