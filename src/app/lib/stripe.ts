@@ -1,7 +1,8 @@
 import Stripe from "stripe";
 
+// Use a versão mais recente da API do Stripe que seja compatível
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: "2024-06-20",
+  apiVersion: "2025-05-28.basil", // Versão corrigida
 });
 
 interface StripeItem {

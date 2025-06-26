@@ -16,10 +16,11 @@ interface AsaasPaymentResponse {
   bankSlipUrl?: string;
 }
 
+// Interface corrigida para usar Date
 interface PaymentBody {
   customer: string;
   value: number;
-  dueDate: string; // Mantemos como string
+  dueDate: Date; // Tipo corrigido para Date
   billingType: BillingType;
 }
 
@@ -30,13 +31,10 @@ export async function createAsaasPayment(
   billingType: BillingType = "BOLETO",
 ): Promise<string> {
   try {
-    // Formatando a data corretamente para string ISO (YYYY-MM-DD)
-    const formattedDueDate = dueDate.toISOString().split("T")[0];
-
     const body: PaymentBody = {
       customer: customerId,
       value,
-      dueDate: formattedDueDate, // Passando como string formatada
+      dueDate, // Passamos o objeto Date diretamente
       billingType,
     };
 
