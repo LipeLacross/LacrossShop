@@ -18,6 +18,10 @@ export default function ProductPage() {
   useEffect(() => {
     async function loadProduct() {
       try {
+        // Verificação crítica: slug precisa ser string
+        if (typeof slug !== "string") {
+          throw new Error("Slug inválido");
+        }
         const productData = await fetchProductBySlug(slug);
         setProduct(productData);
       } catch (err) {
@@ -74,7 +78,7 @@ export default function ProductPage() {
     <div className="container mx-auto py-8 px-4">
       <div className="flex flex-col md:flex-row gap-8">
         <div className="md:w-1/2 flex justify-center">
-          {product.image.url ? (
+          {product.image?.url ? (
             <Image
               src={product.image.url}
               alt={product.title}
