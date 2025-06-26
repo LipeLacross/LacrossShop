@@ -6,12 +6,12 @@ import { CartSummary } from "../components/cart/CartSummary";
 import { createStripeSession } from "../lib/stripe";
 import { createMercadoPagoLink } from "../lib/mercadopago";
 import { createAsaasPayment } from "../lib/asaas";
+import Link from "next/link"; // Adicionado
 
 export default function CartPage() {
   const [items, setItems] = useState<CartItemType[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Carregar itens do carrinho do localStorage
   useEffect(() => {
     const savedItems = localStorage.getItem("cart");
     if (savedItems) {
@@ -25,7 +25,6 @@ export default function CartPage() {
     setLoading(false);
   }, []);
 
-  // Salvar itens no localStorage sempre que mudarem
   useEffect(() => {
     if (items.length > 0) {
       localStorage.setItem("cart", JSON.stringify(items));
@@ -40,7 +39,6 @@ export default function CartPage() {
 
   const handleUpdateQuantity = (index: number, newQuantity: number) => {
     if (newQuantity < 1) return;
-
     setItems(
       items.map((item, i) =>
         i === index ? { ...item, quantity: newQuantity } : item,
@@ -78,7 +76,6 @@ export default function CartPage() {
         );
         const dueDate = new Date();
         dueDate.setDate(dueDate.getDate() + 3);
-
         url = await createAsaasPayment(
           "cus_000000000001",
           total,
@@ -88,7 +85,6 @@ export default function CartPage() {
       }
 
       if (url) {
-        // Limpar carrinho após redirecionamento
         localStorage.removeItem("cart");
         window.location.href = url;
       } else {
@@ -110,12 +106,12 @@ export default function CartPage() {
       {items.length === 0 ? (
         <div className="text-center py-12">
           <p className="text-xl mb-4">Seu carrinho está vazio</p>
-          <a
+          <Link
             href="/"
             className="px-6 py-3 bg-primary text-white rounded hover:bg-primary/90"
           >
             Continuar Comprando
-          </a>
+          </Link>
         </div>
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">

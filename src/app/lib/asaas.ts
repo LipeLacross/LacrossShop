@@ -1,6 +1,5 @@
 import { createAsaasClient } from "asaas-node-sdk";
 
-// Verificação de variáveis de ambiente
 if (!process.env.ASAAS_API_KEY || !process.env.ASAAS_ENVIRONMENT) {
   throw new Error("Variáveis ASAAS não configuradas");
 }
@@ -17,29 +16,30 @@ interface AsaasPaymentResponse {
   bankSlipUrl?: string;
 }
 
+interface PaymentBody {
+  customer: string;
+  value: number;
+  dueDate: string;
+  billingType: BillingType;
+}
+
 export async function createAsaasPayment(
   customerId: string,
   value: number,
-  dueDate: Date, // Aceita objeto Date
+  dueDate: Date,
   billingType: BillingType = "BOLETO",
 ): Promise<string> {
   try {
-    // Converter para string no formato YYYY-MM-DD
     const formattedDueDate = dueDate.toISOString().split("T")[0];
-
-    // Workaround para tipo incorreto no SDK
-    const body: any = {
+    const body: PaymentBody = {
       customer: customerId,
       value,
-      dueDate: formattedDueDate, // String formatada
+      dueDate: formattedDueDate,
       billingType,
     };
 
     const payment = await asaas.createNewPayment({ body });
-
-    if (!payment.data) {
-      throw new Error("Resposta do Asaas sem dados");
-    }
+    if (!payment.data) throw new Error("Resposta do Asaas sem dados");
 
     const data = payment.data as AsaasPaymentResponse;
     return data.invoiceUrl || data.bankSlipUrl || "";

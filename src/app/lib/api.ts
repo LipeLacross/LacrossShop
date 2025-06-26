@@ -11,12 +11,28 @@ async function handle404(response: Response) {
   return response.json();
 }
 
+interface StrapiCategory {
+  id: number;
+  name: string;
+  slug: string;
+}
+
+interface StrapiProduct {
+  id: number;
+  title: string;
+  description: string;
+  price: number;
+  slug: string;
+  image: { url: string } | null;
+  stock: number;
+  categories: StrapiCategory[];
+}
+
 export async function fetchCategories(): Promise<Category[]> {
   try {
     const res = await fetch(`${API_URL}/categories`);
-    const json = await handle404(res);
-    // Em Strapi v3, a resposta é um array direto de categorias
-    return json.map((c: any) => ({
+    const json: StrapiCategory[] = await handle404(res);
+    return json.map((c) => ({
       id: c.id,
       name: c.name,
       slug: c.slug,
@@ -30,9 +46,8 @@ export async function fetchCategories(): Promise<Category[]> {
 export async function fetchProducts(): Promise<Product[]> {
   try {
     const res = await fetch(`${API_URL}/products`);
-    const json = await handle404(res);
-    // Em Strapi v3, a resposta é um array direto de produtos
-    return json.map((p: any) => ({
+    const json: StrapiProduct[] = await handle404(res);
+    return json.map((p) => ({
       id: p.id,
       title: p.title,
       description: p.description,
@@ -43,9 +58,9 @@ export async function fetchProducts(): Promise<Product[]> {
       },
       stock: p.stock,
       categories:
-        p.categories?.map((c: any) => ({
+        p.categories?.map((c) => ({
           id: c.id,
-          name: c.name || c.title, // ajuste conforme o nome do campo no seu Strapi
+          name: c.name,
           slug: c.slug,
         })) || [],
     }));
@@ -58,7 +73,7 @@ export async function fetchProducts(): Promise<Product[]> {
 export async function fetchProductBySlug(slug: string): Promise<Product> {
   try {
     const res = await fetch(`${API_URL}/products?slug=${slug}`);
-    const json = await handle404(res);
+    const json: StrapiProduct[] = await handle404(res);
     if (!json || json.length === 0) {
       throw new Error(`Product not found for slug: ${slug}`);
     }
@@ -74,9 +89,9 @@ export async function fetchProductBySlug(slug: string): Promise<Product> {
       },
       stock: p.stock,
       categories:
-        p.categories?.map((c: any) => ({
+        p.categories?.map((c) => ({
           id: c.id,
-          name: c.name || c.title,
+          name: c.name,
           slug: c.slug,
         })) || [],
     };

@@ -1,5 +1,6 @@
 import { CartItemType } from "../../types";
 import { Button } from "../ui/button";
+import Link from "next/link"; // Adicionado
 
 interface Props {
   items: CartItemType[];
@@ -19,7 +20,7 @@ export function CartSummary({
     0,
   );
 
-  const shipping = 0; // Exemplo: frete fixo
+  const shipping = 0;
   const total = subtotal + shipping;
 
   return (
@@ -65,9 +66,9 @@ export function CartSummary({
       </div>
 
       <div className="mt-6 text-center">
-        <a href="/" className="text-indigo-600 hover:text-indigo-800">
+        <Link href="/" className="text-indigo-600 hover:text-indigo-800">
           Continuar Comprando
-        </a>
+        </Link>
       </div>
     </div>
   );

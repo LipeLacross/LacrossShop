@@ -1,4 +1,5 @@
-declare module 'pagseguro-payment' {
+/* eslint-disable */
+declare module "pagseguro-payment" {
   export default class PagSeguroPayment {
     constructor(credentials: {
       email: string;
@@ -10,13 +11,15 @@ declare module 'pagseguro-payment' {
 
     payment: {
       createTransaction: (
-        options: any,
-        callback: (err: any, transaction: any) => void
+        options: unknown,
+        callback: (err: unknown, transaction: unknown) => void,
       ) => void;
     };
 
     utils: {
-      createSession: (callback: (err: any, sessionId: string) => void) => void;
+      createSession: (
+        callback: (err: unknown, sessionId: string) => void,
+      ) => void;
     };
   }
 }
