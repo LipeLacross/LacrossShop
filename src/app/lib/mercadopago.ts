@@ -1,12 +1,19 @@
 import mercadopago from "mercadopago";
 
-// Solução para o erro de tipagem
-const mp = mercadopago as never;
+// Configuração segura com type casting apropriado
+const mp = mercadopago as unknown as {
+  configure: (config: { access_token: string }) => void;
+  preferences: {
+    create: (payload: any) => Promise<{ body: { init_point: string } }>;
+  };
+};
 
-// Configuração segura
-mp.configure({
-  access_token: process.env.MERCADOPAGO_ACCESS_TOKEN!,
-});
+// Configurar apenas se existir access token
+if (process.env.MERCADOPAGO_ACCESS_TOKEN) {
+  mp.configure({
+    access_token: process.env.MERCADOPAGO_ACCESS_TOKEN,
+  });
+}
 
 interface MercadoPagoItem {
   title: string;
@@ -14,7 +21,9 @@ interface MercadoPagoItem {
   quantity: number;
 }
 
-export async function createMercadoPagoLink(items: MercadoPagoItem[]) {
+export async function createMercadoPagoLink(
+  items: MercadoPagoItem[],
+): Promise<string> {
   try {
     const preference = await mp.preferences.create({
       items,

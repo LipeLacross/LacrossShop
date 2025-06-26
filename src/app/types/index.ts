@@ -4,13 +4,17 @@ export interface Category {
   slug: string;
 }
 
+export interface ProductImage {
+  url: string;
+}
+
 export interface Product {
   id: number;
   title: string;
   description: string;
   price: number;
   slug: string;
-  image: { url: string };
+  image: ProductImage;
   stock: number;
   categories: Category[];
 }

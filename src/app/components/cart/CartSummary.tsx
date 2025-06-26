@@ -1,12 +1,10 @@
-// src/app/components/cart/CartSummary.tsx
-import { CartItemType } from '../../types';
-import { Button } from '../ui/button';
+import { CartItemType } from "../../types";
+import { Button } from "../ui/button";
 
 interface Props {
   items: CartItemType[];
   onStripeCheckout: () => void;
   onMercadoPagoCheckout: () => void;
-  onPagSeguroCheckout: () => void;
   onAsaasCheckout: () => void;
 }
 
@@ -14,34 +12,62 @@ export function CartSummary({
   items,
   onStripeCheckout,
   onMercadoPagoCheckout,
-  onPagSeguroCheckout,
-  onAsaasCheckout
+  onAsaasCheckout,
 }: Props) {
-  const total = items.reduce((sum, i) => sum + i.quantity * i.product.price, 0);
+  const subtotal = items.reduce(
+    (sum, item) => sum + item.product.price * item.quantity,
+    0,
+  );
+
+  const shipping = 0; // Exemplo: frete fixo
+  const total = subtotal + shipping;
 
   return (
-    <div className="border-t pt-4 mt-4">
-      <div className="flex justify-between items-center mb-4">
-        <span className="font-semibold">Total:</span>
-        <span className="text-xl font-bold">R$ {total.toFixed(2)}</span>
+    <div className="bg-white rounded-lg shadow p-6">
+      <h2 className="text-xl font-bold mb-4">Resumo do Pedido</h2>
+
+      <div className="space-y-2 mb-6">
+        <div className="flex justify-between">
+          <span>Subtotal</span>
+          <span>R$ {subtotal.toFixed(2)}</span>
+        </div>
+        <div className="flex justify-between">
+          <span>Frete</span>
+          <span>R$ {shipping.toFixed(2)}</span>
+        </div>
+        <div className="flex justify-between pt-2 border-t font-bold">
+          <span>Total</span>
+          <span>R$ {total.toFixed(2)}</span>
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-        <Button onClick={onStripeCheckout} className="w-full">
+      <div className="space-y-3">
+        <Button
+          onClick={onStripeCheckout}
+          className="w-full bg-indigo-600 hover:bg-indigo-700"
+        >
           Pagar com Cartão (Stripe)
         </Button>
 
-        <Button onClick={onMercadoPagoCheckout} className="w-full bg-[#009EE3] hover:bg-[#0080C0]">
+        <Button
+          onClick={onMercadoPagoCheckout}
+          className="w-full bg-blue-500 hover:bg-blue-600"
+        >
           Pagar com Mercado Pago
         </Button>
 
-        <Button onClick={onPagSeguroCheckout} className="w-full bg-[#FFC107] hover:bg-[#E0A800] text-gray-900">
-          Pagar com PagSeguro
+        <Button
+          onClick={onAsaasCheckout}
+          className="w-full bg-green-600 hover:bg-green-700"
+        >
+          Pagar com Boleto (Asaas)
         </Button>
+      </div>
 
-        <Button onClick={onAsaasCheckout} className="w-full bg-[#00B894] hover:bg-[#00A885]">
-          Pagar com Asaas (Boleto)
-        </Button>
+      <div className="mt-6 text-center">
+        <a href="/" className="text-indigo-600 hover:text-indigo-800">
+          Continuar Comprando
+        </a>
       </div>
     </div>
   );
