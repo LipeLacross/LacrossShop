@@ -27,14 +27,15 @@ export async function createAsaasPayment(
     // Converter para string no formato YYYY-MM-DD
     const formattedDueDate = dueDate.toISOString().split("T")[0];
 
-    const payment = await asaas.createNewPayment({
-      body: {
-        customer: customerId,
-        value,
-        dueDate: formattedDueDate, // String formatada
-        billingType,
-      },
-    });
+    // Workaround para tipo incorreto no SDK
+    const body: any = {
+      customer: customerId,
+      value,
+      dueDate: formattedDueDate, // String formatada
+      billingType,
+    };
+
+    const payment = await asaas.createNewPayment({ body });
 
     if (!payment.data) {
       throw new Error("Resposta do Asaas sem dados");
