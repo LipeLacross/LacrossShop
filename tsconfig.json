@@ -13,31 +13,17 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ],
-    "paths": {
-      "@/*": ["./src/*"]
-    }
+    "plugins": [{"name": "next"}],
+    "paths": {"@/*": ["./src/*"]},
+    "typeRoots": ["./node_modules/@types", "./src/types"]
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules"],
-
-}
-module.exports = {
-  content: [
-    './src/**/*.{js,ts,jsx,tsx,mdx}',
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "eslint.config.mjs",
+    "src/types/**/*.d.ts"
   ],
-  theme: {
-    extend: {
-      colors: {
-        primary: '#2563eb',
-        secondary: '#8b5cf6',
-      },
-    },
-  },
-  plugins: [],
+  "exclude": ["node_modules"]
 }
-
