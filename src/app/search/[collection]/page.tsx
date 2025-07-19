@@ -13,21 +13,25 @@ type Props = {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { collection } = params;
+
   return {
     title: `Search results for ${collection}`,
     description: `Browse products in the ${collection} collection.`,
   };
 }
 
-export default async function SearchPage({ searchParams }: Props) {
+export default async function SearchPage({ params, searchParams }: Props) {
+  const { collection } = params;
   const { q: searchValue, sort } = searchParams || {};
-  const { sortKey, reverse } =
-    sorting.find((s) => s.slug === sort) || defaultSort;
+  const sortItem = sorting.find((s) => s.slug === sort) || defaultSort;
 
   const products = await getProducts({
     query: searchValue,
-    sortKey,
-    reverse,
+    sortKey: sortItem.sortKey,
+    reverse: sortItem.reverse,
+    // Suporte a filtro por coleção, se desejado
+    // Exemplo: collection como parte da query (dependente da API)
+    // collection,
   });
 
   if (!products) notFound();
