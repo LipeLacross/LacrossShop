@@ -1,12 +1,18 @@
+// src/app/[page]/page.tsx
 import type { Metadata } from "next";
 import Prose from "@/app/components/prose";
 import { getPage } from "@/app/lib/api";
 import { notFound } from "next/navigation";
 
-export async function generateMetadata(context: {
-  params: { page: string };
+export async function generateMetadata({
+  params,
+}: {
+  // In Next.js 15+, dynamic `params` are provided as a Promise
+  params: Promise<{ page: string }>;
 }): Promise<Metadata> {
-  const pageData = await getPage(context.params.page);
+  // await the params promise to extract the `page` slug
+  const { page } = await params;
+  const pageData = await getPage(page);
   if (!pageData) notFound();
 
   return {
@@ -20,8 +26,14 @@ export async function generateMetadata(context: {
   };
 }
 
-export default async function Page({ params }: { params: { page: string } }) {
-  const pageData = await getPage(params.page);
+export default async function Page({
+  params,
+}: {
+  // Treat `params` as a Promise here as well
+  params: Promise<{ page: string }>;
+}) {
+  const { page } = await params;
+  const pageData = await getPage(page);
   if (!pageData) notFound();
 
   return (
