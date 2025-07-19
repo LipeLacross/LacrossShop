@@ -1,4 +1,3 @@
-// src/app/search/[collection]/page.tsx
 import Grid from "@/app/components/grid";
 import ProductGridItems from "@/app/components/layout/product-grid-items";
 import { defaultSort, sorting } from "@/app/lib/constants";
@@ -6,13 +5,15 @@ import { getProducts } from "@/app/lib/api";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
+// ✅ O tipo correto para App Router do Next.js 15
 type Props = {
-  params: { collection: string };
-  searchParams?: { q?: string; sort?: string };
+  params: Promise<{ collection: string }>;
+  searchParams?: Promise<{ q?: string; sort?: string }>;
 };
 
+// ✅ Necessário usar await params pois são Promises
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { collection } = params;
+  const { collection } = await params;
 
   return {
     title: `Search results for ${collection}`,
@@ -20,18 +21,18 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
+// ✅ Mesma lógica para o componente da página
 export default async function SearchPage({ params, searchParams }: Props) {
-  const { collection } = params;
-  const { q: searchValue, sort } = searchParams || {};
+  const { collection } = await params;
+  const sp = searchParams ? await searchParams : {};
+  const { q: searchValue, sort } = sp;
   const sortItem = sorting.find((s) => s.slug === sort) || defaultSort;
 
   const products = await getProducts({
     query: searchValue,
     sortKey: sortItem.sortKey,
     reverse: sortItem.reverse,
-    // Suporte a filtro por coleção, se desejado
-    // Exemplo: collection como parte da query (dependente da API)
-    // collection,
+    // collection, // Descomente aqui se getProducts aceitar filtro por coleção
   });
 
   if (!products) notFound();
