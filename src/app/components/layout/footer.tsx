@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import FooterMenu from "@/app/components/layout/footer-menu";
 import LogoSquare from "@/app/components/logo-square";
 import { fetchCategories } from "@/app/lib/api";
+import { Category } from "@/app/types";
 
 const { COMPANY_NAME, SITE_NAME } = process.env;
 
@@ -13,7 +14,7 @@ export default async function Footer() {
   const skeleton =
     "w-full h-6 animate-pulse rounded-sm bg-neutral-200 dark:bg-neutral-700";
 
-  let categories: any[] = [];
+  let categories: Category[] = [];
 
   try {
     categories = await fetchCategories();
@@ -26,7 +27,7 @@ export default async function Footer() {
     path: `/search/${cat.slug}`,
   }));
 
-  const copyrightName = COMPANY_NAME || SITE_NAME || "NeoMercado";
+  const copyrightName = COMPANY_NAME || SITE_NAME || "LacrossTech";
 
   return (
     <footer className="text-sm text-neutral-500 dark:text-neutral-400">

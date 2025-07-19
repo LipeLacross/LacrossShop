@@ -13,7 +13,7 @@ async function handle404(res: Response) {
 }
 
 // ========= SAFE FETCH WRAPPER ========= //
-async function safeFetch<T = any>(
+async function safeFetch<T>(
   input: RequestInfo,
   init?: RequestInit,
 ): Promise<T | null> {

@@ -7,6 +7,7 @@ import {
   useState,
   ReactNode,
 } from "react";
+import { Category } from "@/app/types";
 
 interface CartItem {
   product: {
@@ -17,7 +18,7 @@ interface CartItem {
     slug: string;
     description: string;
     stock: number;
-    categories: any[]; // Pode ser mais restrito se quiser
+    categories: Category[];
   };
   quantity: number;
 }
@@ -29,13 +30,7 @@ interface CartContextType {
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
-export function CartProvider({
-  children,
-  cartPromise,
-}: {
-  children: ReactNode;
-  cartPromise?: Promise<any>; // Agora é opcional e ignorado
-}) {
+export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
 
   useEffect(() => {
