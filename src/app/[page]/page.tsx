@@ -3,12 +3,10 @@ import Prose from "@/app/components/prose";
 import { getPage } from "@/app/lib/api";
 import { notFound } from "next/navigation";
 
-export async function generateMetadata({
-  params,
-}: {
+export async function generateMetadata(context: {
   params: { page: string };
 }): Promise<Metadata> {
-  const pageData = await getPage(params.page);
+  const pageData = await getPage(context.params.page);
   if (!pageData) notFound();
 
   return {
