@@ -1,7 +1,13 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import React, { createContext, useContext, useMemo, useState } from "react";
+import React, {
+  createContext,
+  useContext,
+  useMemo,
+  useCallback,
+  useState,
+} from "react";
 
 type ProductState = {
   [key: string]: string | undefined;
@@ -28,17 +34,23 @@ export function ProductProvider({ children }: { children: React.ReactNode }) {
 
   const [state, setState] = useState<ProductState>(getInitialState());
 
-  const updateOption = (name: string, value: string): ProductState => {
-    const newState = { ...state, [name]: value };
-    setState(newState);
-    return newState;
-  };
+  const updateOption = useCallback(
+    (name: string, value: string): ProductState => {
+      const newState = { ...state, [name]: value };
+      setState(newState);
+      return newState;
+    },
+    [state],
+  );
 
-  const updateImage = (index: string): ProductState => {
-    const newState = { ...state, image: index };
-    setState(newState);
-    return newState;
-  };
+  const updateImage = useCallback(
+    (index: string): ProductState => {
+      const newState = { ...state, image: index };
+      setState(newState);
+      return newState;
+    },
+    [state],
+  );
 
   const value = useMemo(
     () => ({
@@ -46,7 +58,7 @@ export function ProductProvider({ children }: { children: React.ReactNode }) {
       updateOption,
       updateImage,
     }),
-    [state, updateOption, updateImage], // ✅ dependências completas
+    [state, updateOption, updateImage],
   );
 
   return (
