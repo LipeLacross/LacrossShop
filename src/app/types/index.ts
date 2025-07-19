@@ -10,16 +10,11 @@ export interface ProductImage {
 
 export interface Product {
   id: number;
-  title: string;
+  title: string; // mapeado de Strapi.name
   description: string;
-  price: number;
+  price: number; // agora number
   slug: string;
-  image: ProductImage;
+  image: ProductImage; // primeira imagem
   stock: number;
   categories: Category[];
-}
-
-export interface CartItemType {
-  product: Product;
-  quantity: number;
 }

@@ -1,24 +1,21 @@
-import { ProductGrid } from "./components/product/ProductGrid";
-import { fetchProducts } from "./lib/api";
+import { Carousel } from "@/app/components/carousel";
+import { ThreeItemGrid } from "@/app/components/grid/three-items";
+import Footer from "@/app/components/layout/footer";
 
-export default async function Home() {
-  try {
-    const products = await fetchProducts();
+export const metadata = {
+  description:
+    "High-performance ecommerce store built with Next.js, Vercel, and Shopify.",
+  openGraph: {
+    type: "website",
+  },
+};
 
-    return (
-      <div className="container mx-auto py-8">
-        <h1 className="text-3xl font-bold mb-8">Produtos em Destaque</h1>
-        <ProductGrid products={products} />
-      </div>
-    );
-  } catch (error) {
-    return (
-      <div className="container mx-auto py-8 text-center">
-        <h1 className="text-3xl font-bold mb-4">Erro ao carregar produtos</h1>
-        <p className="text-red-500">
-          {error instanceof Error ? error.message : "Erro desconhecido"}
-        </p>
-      </div>
-    );
-  }
+export default function HomePage() {
+  return (
+    <>
+      <ThreeItemGrid />
+      <Carousel />
+      <Footer />
+    </>
+  );
 }
