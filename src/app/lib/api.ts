@@ -64,6 +64,13 @@ interface StrapiPage {
   };
 }
 
+export async function getPages(): Promise<StrapiPage[]> {
+  const pages = await safeFetch<StrapiPage[]>(
+    `${API_URL}/pages?_limit=100&_sort=id:desc`,
+  );
+  return pages || [];
+}
+
 // ========= CONVERSÃO: Produto Strapi → Produto do Front ========= //
 function mapStrapiProduct(p: StrapiProduct): Product {
   return {

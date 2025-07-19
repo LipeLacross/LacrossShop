@@ -3,13 +3,11 @@ import Prose from "@/app/components/prose";
 import { getPage } from "@/app/lib/api";
 import { notFound } from "next/navigation";
 
-type PageProps = {
-  params: { page: string };
-};
-
 export async function generateMetadata({
   params,
-}: PageProps): Promise<Metadata> {
+}: {
+  params: { page: string };
+}): Promise<Metadata> {
   const pageData = await getPage(params.page);
   if (!pageData) notFound();
 
@@ -24,7 +22,7 @@ export async function generateMetadata({
   };
 }
 
-export default async function Page({ params }: PageProps) {
+export default async function Page({ params }: { params: { page: string } }) {
   const pageData = await getPage(params.page);
   if (!pageData) notFound();
 
