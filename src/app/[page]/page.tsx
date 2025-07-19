@@ -1,53 +1,50 @@
-// src/app/search/[collection]/page.tsx
-import Grid from "@/app/components/grid";
-import ProductGridItems from "@/app/components/layout/product-grid-items";
-import { defaultSort, sorting } from "@/app/lib/constants";
-import { getProducts } from "@/app/lib/api";
+// src/app/[page]/page.tsx
 import type { Metadata } from "next";
+import Prose from "@/app/components/prose";
+import { getPage } from "@/app/lib/api";
 import { notFound } from "next/navigation";
 
 type Props = {
-  params: { collection: string };
-  searchParams?: { q?: string; sort?: string };
+  params: Promise<{ page: string }>;
+  // se você vier a usar searchParams, descomente e tipifique como Promise:
+  // searchParams: Promise<{ [key: string]: string | undefined }>;
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { collection } = params;
+  const { page } = await params;
+  const pageData = await getPage(page);
+  if (!pageData) notFound();
+
   return {
-    title: `Search results for ${collection}`,
-    description: `Browse products in the ${collection} collection.`,
+    title: pageData.seo?.title || pageData.title,
+    description: pageData.seo?.description || pageData.bodySummary,
+    openGraph: {
+      publishedTime: pageData.createdAt,
+      modifiedTime: pageData.updatedAt,
+      type: "article",
+    },
   };
 }
 
-export default async function SearchPage({ searchParams }: Props) {
-  // Removido o uso de `params.collection`
-  const sp = searchParams || {};
-  const { q: searchValue, sort } = sp;
-  const sortItem = sorting.find((s) => s.slug === sort) || defaultSort;
-
-  const products = await getProducts({
-    query: searchValue,
-    sortKey: sortItem.sortKey,
-    reverse: sortItem.reverse,
-  });
-
-  if (!products) notFound();
-
-  const resultsText = products.length === 1 ? "result" : "results";
+export default async function Page({ params }: Props) {
+  const { page } = await params;
+  const pageData = await getPage(page);
+  if (!pageData) notFound();
 
   return (
     <>
-      {searchValue && (
-        <p className="mb-4">
-          {products.length === 0
-            ? "No products found for "
-            : `Showing ${products.length} ${resultsText} for `}
-          <span className="font-bold">&#34;{searchValue}&#34;</span>
-        </p>
-      )}
-      <Grid className="grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-        <ProductGridItems products={products} />
-      </Grid>
+      <h1 className="mb-8 text-5xl font-bold">{pageData.title}</h1>
+      <Prose className="mb-8" html={pageData.body} />
+      <p className="text-sm italic">
+        {`This document was last updated on ${new Intl.DateTimeFormat(
+          undefined,
+          {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          },
+        ).format(new Date(pageData.updatedAt))}.`}
+      </p>
     </>
   );
 }
