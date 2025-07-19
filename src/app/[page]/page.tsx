@@ -7,22 +7,21 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 type Props = {
-  params: Promise<{ collection: string }>;
-  searchParams?: Promise<{ q?: string; sort?: string }>;
+  params: { collection: string };
+  searchParams?: { q?: string; sort?: string };
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { collection } = await params;
-  // Optionally validate `collection` here
+  const { collection } = params;
   return {
     title: `Search results for ${collection}`,
     description: `Browse products in the ${collection} collection.`,
   };
 }
 
-export default async function SearchPage({ params, searchParams }: Props) {
-  const { collection } = await params;
-  const sp = searchParams ? await searchParams : {};
+export default async function SearchPage({ searchParams }: Props) {
+  // Removido o uso de `params.collection`
+  const sp = searchParams || {};
   const { q: searchValue, sort } = sp;
   const sortItem = sorting.find((s) => s.slug === sort) || defaultSort;
 
@@ -30,8 +29,6 @@ export default async function SearchPage({ params, searchParams }: Props) {
     query: searchValue,
     sortKey: sortItem.sortKey,
     reverse: sortItem.reverse,
-    // Pass collection to filter if your API supports it:
-    // e.g. getProducts({ ..., collection })
   });
 
   if (!products) notFound();
@@ -45,7 +42,7 @@ export default async function SearchPage({ params, searchParams }: Props) {
           {products.length === 0
             ? "No products found for "
             : `Showing ${products.length} ${resultsText} for `}
-          <span className="font-bold">"{searchValue}"</span>
+          <span className="font-bold">&#34;{searchValue}&#34;</span>
         </p>
       )}
       <Grid className="grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
