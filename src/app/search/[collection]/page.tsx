@@ -1,4 +1,3 @@
-// src/app/search/[collection]/page.tsx
 import Grid from "@/app/components/grid";
 import ProductGridItems from "@/app/components/layout/product-grid-items";
 import { defaultSort, sorting } from "@/app/lib/constants";
@@ -6,13 +5,11 @@ import { getProducts } from "@/app/lib/api";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
-// ✅ Tipos exigidos pelo App Router (params e searchParams como Promises)
 type Props = {
   params: Promise<{ collection: string }>;
   searchParams?: Promise<{ q?: string; sort?: string }>;
 };
 
-// ✅ collection está sendo usado aqui para SEO
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { collection } = await params;
 
@@ -22,9 +19,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-// ✅ Não usamos 'collection' aqui -> REMOVIDO para evitar erro do ESLint
-export default async function SearchPage({ params, searchParams }: Props) {
-  // const { collection } = await params; ❌ Removido para evitar "unused variable"
+export default async function SearchPage({ params: _, searchParams }: Props) {
   const sp = searchParams ? await searchParams : {};
   const { q: searchValue, sort } = sp;
   const sortItem = sorting.find((s) => s.slug === sort) || defaultSort;
