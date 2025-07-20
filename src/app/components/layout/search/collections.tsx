@@ -3,11 +3,28 @@
 import clsx from "clsx";
 import { Suspense } from "react";
 import FilterList from "./filter";
-import { getCollections } from "@/app/lib/api"; // ✅ CORRETO: função que retorna todas as categorias
+import { getCollections } from "@/app/lib/api";
+
+// ✅ Define o tipo esperado se necessário (supondo que seja igual a SortFilterItem)
+type ListItem = {
+  title: string;
+  slug: string;
+  sortKey: string;
+  reverse: boolean;
+};
 
 async function CollectionList() {
-  const collections = await getCollections(); // ✅ sem argumento!
-  return <FilterList list={collections} title="Collections" />;
+  const collections = await getCollections();
+
+  // ✅ Mapeia os resultados para o tipo ListItem esperado no FilterList
+  const mapped: ListItem[] = collections.map((col) => ({
+    title: col.title,
+    slug: col.slug,
+    sortKey: "relevance", // or other logic based on use case
+    reverse: false,
+  }));
+
+  return <FilterList list={mapped} title="Collections" />;
 }
 
 const skeleton = "mb-3 h-4 w-5/6 animate-pulse rounded-sm";
