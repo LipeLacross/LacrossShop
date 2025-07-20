@@ -1,19 +1,22 @@
 import Grid from "@/app/components/grid";
-import { ProductGrid } from "@/app/components/product/ProductGrid"; // corrigido aqui
+import { ProductGrid } from "@/app/components/product/ProductGrid";
 import { getProducts } from "@/app/lib/api";
 import { defaultSort, sorting } from "@/app/lib/constants";
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 
-export const metadata = {
+type Props = {
+  searchParams?: Promise<{ q?: string; sort?: string }>;
+};
+
+export const metadata: Metadata = {
   title: "Search",
   description: "Search for products in the store.",
 };
 
-export default async function SearchPage({
-  searchParams,
-}: {
-  searchParams?: { q?: string; sort?: string };
-}) {
-  const { q: searchValue, sort } = searchParams || {};
+export default async function SearchPage({ searchParams }: Props) {
+  const sp = searchParams ? await searchParams : {};
+  const { q: searchValue, sort } = sp;
 
   const sortItem = sorting.find((s) => s.slug === sort) || defaultSort;
 
@@ -22,6 +25,8 @@ export default async function SearchPage({
     sortKey: sortItem.sortKey,
     reverse: sortItem.reverse,
   });
+
+  if (!products) notFound();
 
   const resultsText = products.length !== 1 ? "results" : "result";
 
