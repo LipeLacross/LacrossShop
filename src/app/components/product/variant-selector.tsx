@@ -6,7 +6,6 @@ import {
   useUpdateURL,
 } from "@/app/components/product/product-context";
 
-// ✅ Adicione aqui os tipos ausentes
 type ProductOption = {
   id: string;
   name: string;
@@ -37,6 +36,7 @@ export function VariantSelector({
 }) {
   const { state, updateOption } = useProduct();
   const updateURL = useUpdateURL();
+
   const hasNoOptionsOrJustOneOption =
     !options.length ||
     (options.length === 1 && options[0]?.values.length === 1);
@@ -55,53 +55,66 @@ export function VariantSelector({
     ),
   }));
 
-  return options.map((option) => (
-    <form key={option.id}>
-      <dl className="mb-8">
-        <dt className="mb-4 text-sm uppercase tracking-wide">{option.name}</dt>
-        <dd className="flex flex-wrap gap-3">
-          {option.values.map((value) => {
-            const nameLC = option.name.toLowerCase();
-            const optionParams = { ...state, [nameLC]: value };
-            const filtered = Object.entries(optionParams).filter(([k, v]) =>
-              options.find(
-                (opt) => opt.name.toLowerCase() === k && opt.values.includes(v),
-              ),
-            );
-            const isAvailableForSale =
-              combinations.find((c) =>
-                filtered.every(([k, v]) => c[k] === v && c.availableForSale),
-              ) !== undefined;
+  return options.map((option) => {
+    const nameLC = option.name.toLowerCase();
 
-            const isActive = state[nameLC] === value;
+    return (
+      <form key={option.id}>
+        <dl className="mb-8">
+          <dt className="mb-4 text-sm uppercase tracking-wide">
+            {option.name}
+          </dt>
+          <dd className="flex flex-wrap gap-3">
+            {option.values.map((value) => {
+              const optionParams = { ...state, [nameLC]: value };
 
-            return (
-              <button
-                formAction={() => {
-                  const newState = updateOption(nameLC, value);
-                  updateURL(newState);
-                }}
-                key={value}
-                aria-disabled={!isAvailableForSale}
-                disabled={!isAvailableForSale}
-                title={`${option.name} ${value}${!isAvailableForSale ? " (Out of Stock)" : ""}`}
-                className={clsx(
-                  "flex min-w-[48px] items-center justify-center rounded-full border bg-neutral-100 px-2 py-1 text-sm dark:border-neutral-800 dark:bg-neutral-900",
-                  {
-                    "cursor-default ring-2 ring-blue-600": isActive,
-                    "ring-1 ring-transparent transition duration-300 ease-in-out hover:ring-blue-600":
-                      !isActive && isAvailableForSale,
-                    "relative z-10 cursor-not-allowed overflow-hidden bg-neutral-100 text-neutral-500 ring-1 ring-neutral-300 before:absolute before:inset-x-0 before:-z-10 before:h-px before:-rotate-45 before:bg-neutral-300 before:transition-transform dark:bg-neutral-900 dark:text-neutral-400 dark:ring-neutral-700 dark:before:bg-neutral-700":
-                      !isAvailableForSale,
-                  },
-                )}
-              >
-                {value}
-              </button>
-            );
-          })}
-        </dd>
-      </dl>
-    </form>
-  ));
+              // ✅ RESOLVIDO: tipo de v validado dentro da função
+              const filtered = Object.entries(optionParams).filter(([k, v]) => {
+                if (typeof v !== "string") return false;
+
+                return options.some(
+                  (opt) =>
+                    opt.name.toLowerCase() === k && opt.values.includes(v),
+                );
+              });
+
+              const isAvailableForSale =
+                combinations.find((c) =>
+                  filtered.every(([k, v]) => c[k] === v && c.availableForSale),
+                ) !== undefined;
+
+              const isActive = state[nameLC] === value;
+
+              return (
+                <button
+                  formAction={() => {
+                    const newState = updateOption(nameLC, value);
+                    updateURL(newState);
+                  }}
+                  key={value}
+                  aria-disabled={!isAvailableForSale}
+                  disabled={!isAvailableForSale}
+                  title={`${option.name} ${value}${
+                    !isAvailableForSale ? " (Out of Stock)" : ""
+                  }`}
+                  className={clsx(
+                    "flex min-w-[48px] items-center justify-center rounded-full border bg-neutral-100 px-2 py-1 text-sm dark:border-neutral-800 dark:bg-neutral-900",
+                    {
+                      "cursor-default ring-2 ring-blue-600": isActive,
+                      "ring-1 ring-transparent transition duration-300 ease-in-out hover:ring-blue-600":
+                        !isActive && isAvailableForSale,
+                      "relative z-10 cursor-not-allowed overflow-hidden bg-neutral-100 text-neutral-500 ring-1 ring-neutral-300 before:absolute before:inset-x-0 before:-z-10 before:h-px before:-rotate-45 before:bg-neutral-300 before:transition-transform dark:bg-neutral-900 dark:text-neutral-400 dark:ring-neutral-700 dark:before:bg-neutral-700":
+                        !isAvailableForSale,
+                    },
+                  )}
+                >
+                  {value}
+                </button>
+              );
+            })}
+          </dd>
+        </dl>
+      </form>
+    );
+  });
 }
