@@ -1,10 +1,26 @@
 "use client";
+
 import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import { fetchProductBySlug } from "../../lib/api";
-import { Product, CartItemType } from "../../types";
+import { Product } from "../../types";
 import Image from "next/image";
 import { Button } from "../../components/ui/button";
+
+// ✅ Tipo CartItemType definido localmente
+type CartItemType = {
+  product: {
+    id: number;
+    title: string;
+    price: number;
+    image: { url: string };
+    slug: string;
+    description: string;
+    stock: number;
+    categories: { id: number; name: string; slug: string }[];
+  };
+  quantity: number;
+};
 
 export default function ProductPage() {
   const params = useParams();
@@ -18,7 +34,6 @@ export default function ProductPage() {
   useEffect(() => {
     async function loadProduct() {
       try {
-        // Verificação crítica: slug precisa ser string
         if (typeof slug !== "string") {
           throw new Error("Slug inválido");
         }
@@ -55,9 +70,9 @@ export default function ProductPage() {
           price: product.price,
           image: product.image,
           slug: product.slug,
-          description: "",
-          stock: 0,
-          categories: [],
+          description: product.description,
+          stock: product.stock,
+          categories: product.categories,
         },
         quantity: qty,
       });
