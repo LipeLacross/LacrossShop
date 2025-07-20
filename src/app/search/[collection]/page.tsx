@@ -10,6 +10,7 @@ type Props = {
   searchParams?: Promise<{ q?: string; sort?: string }>;
 };
 
+// ✅ SEO dinâmico com `collection`
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { collection } = await params;
 
@@ -19,7 +20,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default async function SearchPage({ params: _, searchParams }: Props) {
+// ✅ `params` removido completamente pois não é usado dentro
+export default async function SearchPage({
+  searchParams,
+}: Omit<Props, "params">) {
   const sp = searchParams ? await searchParams : {};
   const { q: searchValue, sort } = sp;
   const sortItem = sorting.find((s) => s.slug === sort) || defaultSort;
