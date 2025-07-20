@@ -18,7 +18,10 @@ async function safeFetch<T>(
   init?: RequestInit,
 ): Promise<T | null> {
   try {
-    const response = await fetch(input, { ...init, cache: "no-store" });
+    const response = await fetch(input, {
+      ...init,
+      cache: process.env.NODE_ENV === "production" ? "force-cache" : "no-store",
+    });
     return await handle404(response);
   } catch (error) {
     console.error(`❌ Falha ao buscar ${input.toString()}:`, error);

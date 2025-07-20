@@ -2,7 +2,6 @@
 import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 
-// Componente interno que usa useSearchParams
 function CheckoutContent() {
   const searchParams = useSearchParams();
   const paymentStatus = searchParams.get("status");
@@ -25,7 +24,6 @@ function CheckoutContent() {
   );
 }
 
-// Componente principal com Suspense Boundary
 export default function CheckoutPage() {
   return (
     <Suspense fallback={<div className="text-center py-12">Carregando...</div>}>
