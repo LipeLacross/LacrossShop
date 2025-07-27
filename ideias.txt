@@ -1,349 +1,88 @@
-Aqui está o conteúdo do arquivo **paste.txt** organizado e devolvido completo, sem cortes, seguindo a estrutura de tópicos e com clareza. O texto já está bem estruturado, então apenas garanto que todo o conteúdo está presente e legível:
+Aqui está um guia organizado, prático e direto de **como estruturar seu projeto de e-commerce multiloja com Strapi v3.6.8** usando apenas o Strapi CLI, sem painel web, 100% versionável e rodando onde você quiser:
 
-## Esquema Completo do Projeto NeoMercado
+# 🗂️ Estrutura e Organização do Projeto — Strapi Multiloja Headless (CLI)
 
-### 1. Estrutura de Arquivos do Projeto
+## 1️⃣ Estrutura de Pastas Recomendada
 
-```plaintext
-neomercado/
-├── public/                  # Assets estáticos
-│   ├── favicon.ico
-│   ├── icons/
-│   └── images/
-├── src/
-│   ├── app/                 # Next.js App Router
-│   │   ├── (site)/          # Rotas públicas
-│   │   │   ├── cart/
-│   │   │   │   └── page.tsx
-│   │   │   ├── checkout/
-│   │   │   │   └── page.tsx
-│   │   │   ├── product/
-│   │   │   │   └── [slug]/
-│   │   │   │       └── page.tsx
-│   │   │   ├── success/
-│   │   │   │   └── page.tsx
-│   │   │   ├── layout.tsx
-│   │   │   └── page.tsx
-│   │   ├── api/             # Rotas API
-│   │   ├── components/
-│   │   │   ├── cart/
-│   │   │   │   ├── CartItem.tsx
-│   │   │   │   └── CartSummary.tsx
-│   │   │   ├── product/
-│   │   │   │   ├── ProductCard.tsx
-│   │   │   │   └── ProductGrid.tsx
-│   │   │   └── ui/
-│   │   │       ├── Button.tsx
-│   │   │       └── Dialog.tsx
-│   │   ├── lib/
-│   │   │   ├── api/         # Integração Strapi
-│   │   │   │   ├── product.ts
-│   │   │   │   └── order.ts
-│   │   │   ├── payment/     # Gateways pagamento
-│   │   │   │   ├── asaas.ts
-│   │   │   │   ├── stripe.ts
-│   │   │   │   └── mercadopago.ts
-│   │   │   └── utils.ts
-│   │   ├── types/           # Tipos TypeScript
-│   │   │   └── index.ts
-│   │   └── styles/          # Estilos globais
-│   ├── contexts/            # Gerenciamento estado
-│   │   └── CartContext.tsx
-│   └── ...
-├── next.config.js
-├── package.json
-└── docker-compose.yml        # Para ambiente local
+```
+my-ecommerce-backend/
+├── api/                # Todas suas collections: store, product, category, etc.
+│   ├── store/
+│   ├── product/
+│   ├── category/
+│   ├── customer/
+│   ├── order/
+│   └── payment/
+├── components/         # Componentes reutilizáveis: variants, order-items, address
+│   ├── product/
+│   ├── order/
+│   └── shared/
+├── config/             # Configurações globais do Strapi (servidor, db, etc.)
+├── public/             # Arquivos públicos (especialmente uploads de imagens)
+│   └── uploads/
+├── package.json        # Dependências do projeto
+├── yarn.lock           # Se usar yarn
+├── .env                # Variáveis de ambiente (dev/prod)
+└── (opcional) _admin/  # Renomeie a pasta admin caso queira desabilitar o painel visual
 ```
 
+## 2️⃣ Gerando o back-end pelo CLI (Terminal)
 
-### 2. Collection Types do Strapi (v3.6.8)
-
-```json
-// Product (Produto)
-{
-  "kind": "collectionType",
-  "collectionName": "products",
-  "attributes": {
-    "name": {"type": "string", "required": true, "maxLength": 255},
-    "description": {"type": "text"},
-    "price": {"type": "decimal", "required": true, "min": 0},
-    "slug": {"type": "uid", "target": "name"},
-    "images": {
-      "collection": "file",
-      "via": "related",
-      "plugin": "upload",
-      "required": true
-    },
-    "stock": {"type": "integer", "default": 0},
-    "categories": {
-      "collection": "category",
-      "via": "products",
-      "dominant": true
-    },
-    "variants": {
-      "type": "component",
-      "repeatable": true,
-      "component": "product.variants"
-    }
-  }
-}
-
-// Category (Categoria)
-{
-  "kind": "collectionType",
-  "collectionName": "categories",
-  "attributes": {
-    "name": {"type": "string", "required": true},
-    "slug": {"type": "uid", "target": "name"},
-    "featured": {"type": "boolean", "default": false},
-    "products": {
-      "collection": "product",
-      "via": "categories"
-    }
-  }
-}
-
-// Order (Pedido)
-{
-  "kind": "collectionType",
-  "collectionName": "orders",
-  "attributes": {
-    "total": {"type": "decimal", "required": true},
-    "status": {
-      "type": "enumeration",
-      "enum": ["pending", "confirmed", "shipped", "delivered", "cancelled"],
-      "default": "pending"
-    },
-    "customer": {
-      "model": "customer",
-      "required": true
-    },
-    "payment": {
-      "model": "payment"
-    },
-    "items": {
-      "type": "component",
-      "repeatable": true,
-      "component": "order.items"
-    }
-  }
-}
-
-// Customer (Cliente)
-{
-  "kind": "collectionType",
-  "collectionName": "customers",
-  "attributes": {
-    "fullName": {"type": "string", "required": true},
-    "email": {"type": "email", "unique": true, "required": true},
-    "address": {
-      "type": "component",
-      "component": "shared.address",
-      "required": true
-    },
-    "phone": {"type": "string"},
-    "orders": {
-      "collection": "order",
-      "via": "customer"
-    }
-  }
-}
-
-// Payment (Pagamento)
-{
-  "kind": "collectionType",
-  "collectionName": "payments",
-  "attributes": {
-    "amount": {"type": "decimal", "required": true},
-    "method": {
-      "type": "enumeration",
-      "enum": ["credit_card", "boleto", "pix", "wallet"],
-      "required": true
-    },
-    "status": {
-      "type": "enumeration",
-      "enum": ["pending", "paid", "refused", "refunded"],
-      "default": "pending"
-    },
-    "gatewayId": {"type": "string"},
-    "order": {
-      "model": "order",
-      "required": true
-    }
-  }
-}
+### Crie o projeto:
+```bash
+npx create-strapi-app my-ecommerce-backend --quickstart
+cd my-ecommerce-backend
 ```
 
-
-### 3. Componentes Necessários
-
-```json
-// product.variants.json
-{
-  "attributes": {
-    "name": {"type": "string", "required": true},
-    "options": {
-      "type": "json",
-      "required": true
-    }
-  }
-}
-
-// order.items.json
-{
-  "attributes": {
-    "product": {
-      "model": "product",
-      "required": true
-    },
-    "quantity": {"type": "integer", "required": true, "min": 1},
-    "priceAtPurchase": {"type": "decimal", "required": true}
-  }
-}
-
-// shared.address.json
-{
-  "attributes": {
-    "street": {"type": "string", "required": true},
-    "city": {"type": "string", "required": true},
-    "state": {"type": "string", "required": true},
-    "zipCode": {"type": "string", "required": true},
-    "country": {"type": "string", "default": "Brasil"}
-  }
-}
+### Crie as collections (APIs):
+```bash
+strapi generate:api store name:string slug:uid domain:string description:text logo:media 
+strapi generate:api category name:string slug:uid featured:boolean store:relation:store
+strapi generate:api product name:string description:text price:decimal slug:uid images:media:multiple stock:integer store:relation:store categories:relation:category
+strapi generate:api customer fullName:string email:email phone:string address:component:shared.address store:relation:store
+strapi generate:api order total:decimal status:enumeration:pending,confirmed,shipped,delivered,cancelled items:component:order.order-items:repeatable customer:relation:customer payment:relation:payment store:relation:store
+strapi generate:api payment amount:decimal method:enumeration:credit_card,boleto,pix,wallet status:enumeration:pending,paid,refused,refunded gatewayId:string order:relation:order store:relation:store
 ```
 
-
-### 4. Relações entre Entidades
-
-```mermaid
-erDiagram
-    PRODUCT ||--o{ CATEGORY : "pertenece a"
-    PRODUCT ||--o{ ORDER_ITEM : "contido em"
-    ORDER ||--o{ ORDER_ITEM : "contém"
-    ORDER ||--|| PAYMENT : "tem"
-    ORDER ||--|| CUSTOMER : "feito por"
-    CUSTOMER ||--o{ ORDER : "faz"
-    PAYMENT ||--|| ORDER : "pertence a"
+### Crie os componentes reutilizáveis:
+```bash
+strapi generate:component product variants label:string value:string priceDelta:decimal
+strapi generate:component order order-items productId:integer quantity:integer subtotal:decimal
+strapi generate:component shared address street:string number:string neighborhood:string city:string state:string zip:string
 ```
 
+- Todos os arquivos necessários ficam já nas pastas `api/` e `components/` — só versionar!
 
-### 5. Configurações Recomendadas
+## 3️⃣ Vantagens desse método
 
-- **Permissões:**
-  - Ative `find` e `findOne` para `product` e `category` no role `Public`
-  - Restrinja operações de escrita apenas para roles autenticados
+- **Tudo versionável** — controle no Git, CI/CD, fácil de migrar e replicar.
+- **Zero dependência de painel web** — totalmente headless.
+- **Migrável e portável** — use Node.js e qualquer banco de dados suportado.
+- **Controle total do ambiente** — local, VPS, cloud, containers, seu jeito.
+- **Facilidade para Devs** — trabalhar colaborando só com código/configuração.
 
-- **Webhooks:**
-  - Configure webhooks para atualização de status de pagamento
-  ```javascript
-  // config/functions/bootstrap.js
-  module.exports = async () => {
-    strapi.services.payment.registerWebhooks();
-  };
-  ```
+## 4️⃣ Deploy e manutenção
 
-- **Campos Dinâmicos:**
-  - Adicione um campo `relatedProducts` no Product:
-  ```json
-  "relatedProducts": {
-    "collection": "product",
-    "via": "id",
-    "plugin": "relations"
-  }
-  ```
+- Só precisa de **Node.js** e do seu banco (SQLite para dev, PostgreSQL para produção, etc.).
+- Não precisa do strapi.com (Strapi Cloud) — só use se quiser deploy automatizado por Git.
+- Pode rodar local, Docker, ou em plataformas como Railway, Render, Coolify, etc.
 
+## 5️⃣ Como remover/desativar o admin (opcional)
 
-### 6. Vantagens deste Esquema
-
-1. **Normalização:**
-   - Componentes reutilizáveis (endereço, itens do pedido)
-   - Relações otimizadas para performance
-
-2. **Extensibilidade:**
-   - Sistema de variações de produtos escalável
-   - Histórico de preços preservado em `priceAtPurchase`
-
-3. **Integrações:**
-   - Compatível com gateways de pagamento brasileiros
-   - Suporte a webhooks para notificações em tempo real
-
-4. **Gestão de Estoque:**
-   - Controle preciso através do campo `stock`
-   - Atualização via hooks após pedidos
-
-### 7. Implementação no Strapi
-
-1. Acesse **Content-Type Builder**
-2. Crie cada collection type com os campos especificados
-3. Adicione os componentes
-4. Configure relações conforme diagrama
-5. Publique os content types
-
-**Dica:** Para variantes complexas (tamanho+cor), use:
-```json
-"options": {
-  "type": "json",
-  "default": [
-    {"size": "P", "color": "Preto"},
-    {"size": "M", "color": "Branco"}
-  ]
-}
+Após configurar e ajustar tudo, caso não queira expor ou usar o painel web:
+```bash
+mv admin _admin
 ```
+Ou bloqueie para rede interna apenas.
 
+## 6️⃣ Backup e portabilidade
 
-### 8. Fluxo de Pagamento
+- Para portar ou restaurar: copie o projeto (`api/`, `components/`, `config/`, `package.json`, `.env`) + backup do banco de dados (dump SQL).
+- Pode fazer seed de dados com scripts, REST, importar/exportar com o CLI, e versionar tudo.
 
-```mermaid
-sequenceDiagram
-    participant F as Frontend
-    participant S as Strapi
-    participant P as Payment Gateway
-    
-    F->>S: POST /orders (cria pedido)
-    S->>F: 201 Created (order data)
-    F->>P: Inicia pagamento (dados do pedido)
-    P->>F: Redireciona para checkout
-    F->>P: Completa pagamento
-    P->>S: Webhook (atualiza status)
-    S->>F: Notificação de status
-```
+### Ou seja:
 
-
-### 9. Variáveis de Ambiente
-
-**.env.local (Frontend)**
-```env
-NEXT_PUBLIC_STRAPI_URL=https://strapi.lacrosstech.com.br
-NEXT_PUBLIC_APP_URL=https://neomercado.com.br
-STRIPE_PUBLISHABLE_KEY=pk_live_...
-MERCADOPAGO_PUBLIC_KEY=...
-ASAAS_API_KEY=...
-```
-
-**.env (Strapi Backend)**
-```env
-DATABASE_URL=postgres://user:pass@db:5432/neomercado
-STRIPE_SECRET_KEY=sk_live_...
-MERCADOPAGO_ACCESS_TOKEN=...
-ASAAS_ENVIRONMENT=production
-```
-
-
-
-### 13. Monitoramento e Analytics
-
-Este esquema completo inclui:
-- Estrutura de arquivos otimizada
-- Collection Types detalhados para Strapi v3
-- Fluxos de dados e pagamento
-- Configurações de segurança e ambiente
-- Exemplos de implementação
-- Estratégias de deploy e monitoramento
-
-Para implementar:
-1. Configure os Collection Types no Strapi
-2. Implemente os componentes React conforme estrutura
-3. Configure variáveis de ambiente
-4. Implemente os serviços de pagamento
-5. Configure pipelines de deploy
+- **Você não precisa de painel web rodando nem de Strapi Cloud.**
+- Pode gerenciar e criar tudo CLI/arquivos.
+- Só depende de Node.js e banco.
+- Strapi CLI é o método mais dev-friendly, seguro e “infra as code” para times ou projetos que querem automação máxima e liberdade.
