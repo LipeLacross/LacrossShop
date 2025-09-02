@@ -1,0 +1,240 @@
+Feito. Aqui está o **esquema final** (estrutura + “schemas” mínimos) pra você colar e sair rodando com **Strapi v5 + Next (App Router)**.
+
+# Backend (Strapi v5) — estrutura
+
+```txt
+my-ecommerce-backend/
+├─ .env
+├─ package.json
+├─ config/
+│  ├─ database.ts
+│  ├─ server.ts
+│  └─ middlewares.ts          # (opcional: CORS)
+└─ src/
+   ├─ api/
+   │  ├─ product/
+   │  │  └─ content-types/
+   │  │     └─ product/
+   │  │        ├─ schema.json
+   │  │        ├─ lifecycles.ts      # (opcional)
+   │  │        ├─ controllers/product.ts  # (auto/gerado)
+   │  │        └─ routes/product.ts       # (auto/gerado)
+   │  ├─ category/
+   │  │  └─ content-types/
+   │  │     └─ category/
+   │  │        ├─ schema.json
+   │  │        └─ (idem acima)
+   │  └─ page/
+   │     └─ content-types/
+   │        └─ page/
+   │           └─ schema.json
+   └─ components/              # (se usar)
+```
+
+## Schemas Strapi (cole e ajuste só o “info.name” se quiser)
+
+**`src/api/category/content-types/category/schema.json`**
+
+```json
+{
+  "kind": "collectionType",
+  "collectionName": "categories",
+  "info": { "singularName": "category", "pluralName": "categories", "displayName": "Category" },
+  "options": { "draftAndPublish": true },
+  "attributes": {
+    "name": { "type": "string", "required": true },
+    "slug": { "type": "uid", "targetField": "name", "required": true, "unique": true },
+    "products": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::product.product",
+      "mappedBy": "categories"
+    }
+  }
+}
+```
+
+**`src/api/product/content-types/product/schema.json`**
+
+```json
+{
+  "kind": "collectionType",
+  "collectionName": "products",
+  "info": { "singularName": "product", "pluralName": "products", "displayName": "Product" },
+  "options": { "draftAndPublish": true },
+  "attributes": {
+    "name": { "type": "string", "required": true },
+    "slug": { "type": "uid", "targetField": "name", "required": true, "unique": true },
+    "description": { "type": "text" },
+    "price": { "type": "decimal", "default": 0 },
+    "stock": { "type": "integer", "default": 0 },
+    "images": { "type": "media", "multiple": true },
+    "categories": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::category.category",
+      "inversedBy": "products"
+    }
+  }
+}
+```
+
+**`src/api/page/content-types/page/schema.json`**
+
+```json
+{
+  "kind": "collectionType",
+  "collectionName": "pages",
+  "info": { "singularName": "page", "pluralName": "pages", "displayName": "Page" },
+  "options": { "draftAndPublish": true },
+  "attributes": {
+    "title": { "type": "string", "required": true },
+    "slug": { "type": "uid", "targetField": "title", "required": true, "unique": true },
+    "body": { "type": "richtext" }
+  }
+}
+```
+
+---
+
+# Frontend (Next App Router) — estrutura
+
+```txt
+src/
+├─ app/
+│  ├─ layout.tsx
+│  ├─ page.tsx                 # Home
+│  ├─ styles/globals.css
+│  ├─ product/[slug]/page.tsx
+│  ├─ search/page.tsx
+│  ├─ lib/
+│  │  └─ api.ts
+│  └─ components/
+│     ├─ carousel.tsx
+│     ├─ product/
+│     │  ├─ ProductCard.tsx
+│     │  └─ ProductGrid.tsx
+│     └─ cart/
+│        ├─ cart-context.tsx
+│        └─ CartContent.tsx
+├─ next.config.ts
+└─ env/.env.local               # (na raiz do projeto, não dentro de src)
+```
+
+## Arquivos mínimos (conteúdo)
+
+**`src/app/layout.tsx`**
+
+```tsx
+import "./styles/globals.css";
+import { CartProvider } from "@/app/components/cart/cart-context";
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="pt-BR">
+      <body><CartProvider>{children}</CartProvider></body>
+    </html>
+  );
+}
+```
+
+**`src/app/styles/globals.css`**
+
+```css
+@import "tailwindcss";
+```
+
+**`next.config.ts`** (libera imagens do Strapi)
+
+```ts
+import type { NextConfig } from "next";
+const nextConfig: NextConfig = {
+  images: {
+    remotePatterns: [
+      { protocol: "http", hostname: "localhost", port: "1337" }
+      // adicione seu host do Strapi em produção aqui
+    ]
+  }
+};
+export default nextConfig;
+```
+
+**`src/app/lib/api.ts`** (fetchers v5 — trechos)
+
+```ts
+const API_URL = (process.env.NEXT_PUBLIC_STRAPI_URL || "") + "/api";
+const STRAPI = process.env.NEXT_PUBLIC_STRAPI_URL || "";
+const abs = (u?: string) => (u?.startsWith("/") ? `${STRAPI}${u}` : u || "");
+
+export async function fetchProducts() {
+  const res = await fetch(`${API_URL}/products?populate=images,categories&pagination[limit]=100&sort=id:desc`);
+  const json = await res.json(); const data = json?.data || [];
+  return data.map(mapStrapiProduct);
+}
+
+export async function fetchProductBySlug(slug: string) {
+  const res = await fetch(`${API_URL}/products?filters[slug][$eq]=${slug}&populate=images,categories&pagination[limit]=1`);
+  const json = await res.json(); const p = json?.data?.[0];
+  return p ? mapStrapiProduct(p) : null;
+}
+
+export async function getCollectionProducts(slug: string) {
+  const c = await fetch(`${API_URL}/categories?filters[slug][$eq]=${slug}&pagination[limit]=1`).then(r=>r.json());
+  const id = c?.data?.[0]?.id; if (!id) return [];
+  const prods = await fetch(`${API_URL}/products?filters[categories][id][$eq]=${id}&populate=images,categories&pagination[limit]=100&sort=id:desc`).then(r=>r.json());
+  return (prods?.data || []).map(mapStrapiProduct);
+}
+
+// --- helpers ---
+type SAttr = { name:string; slug:string; description?:string; price?:string; stock?:number; images?:any; categories?:any };
+function mapStrapiProduct(item:any) {
+  const a: SAttr = item?.attributes || {};
+  const img = a.images?.data?.[0]?.attributes?.url;
+  const categories = (a.categories?.data || []).map((c:any)=>({ id:c.id, name:c.attributes?.name, slug:c.attributes?.slug }));
+  return { id: item.id, name: a.name, slug: a.slug, description: a.description, price: Number(a.price || 0), stock: a.stock ?? 0, image: { url: abs(img) }, categories };
+}
+```
+
+---
+
+# .env (já combinados com o que você tinha)
+
+**Backend** `my-ecommerce-backend/.env`
+
+```env
+HOST=0.0.0.0
+PORT=1337
+APP_KEYS=S0KIbk4knQP+HdpI+iRt2Q==,0ykzMons30AVDFGtNZhenQ==,Y6rzrZZOuBIe6waHnaUiuw==,7lWtjTKdwU4h737ZdflKBw==
+API_TOKEN_SALT=HcMrOUhbKxgFA/iIq0qrlw==
+ADMIN_JWT_SECRET=lM1n17DhTEvEKKbhtlmFBg==
+TRANSFER_TOKEN_SALT=FDNl5EdGyyZN/a3W/yBLRg==
+ENCRYPTION_KEY=q+jjyWP09luj13qJ0AcBrA==
+DATABASE_CLIENT=sqlite
+DATABASE_FILENAME=.tmp/data.db
+DATABASE_SSL=false
+# (opcional)
+JWT_SECRET=vnCtShoFhGmbVtB7isE/kw==
+# (só se o backend usar Asaas)
+ASAAS_API_KEY=aact_prod_000MzkwODA2MWY2OGM3MWRlMDU2NWM3MzJlNzZmNGZhZGY6OmNiMTA4MTIzLTZjNTMtNGY4OS04YzY4LTU4YWYxNDM3Nzc4Yzo6JGFhY2hfOTBmODE4N2ItYTBkNC00NDFjLTlkZjUtODdhOGNlMmY1MmYy
+ASAAS_ENVIRONMENT=production
+```
+
+**Frontend** `./.env.local`
+
+```env
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+NEXT_PUBLIC_STRAPI_URL=http://localhost:1337
+ASAAS_API_KEY=aact_prod_000MzkwODA2MWY2OGM3MWRlMDU2NWM3MzJlNzZmNGZhZGY6OmNiMTA4MTIzLTZjNTMtNGY4OS04YzY4LTU4YWYxNDM3Nzc4Yzo6JGFhY2hfOTBmODE4N2ItYTBkNC00NDFjLTlkZjUtODdhOGNlMmY1MmYy
+ASAAS_ENVIRONMENT=production
+
+```
+
+---
+
+## Próximos 5 minutos
+
+1. Colar os **schemas** e subir o Strapi: `npm run develop` → criar 2–3 categorias, 4–6 produtos, 1 página.
+2. Dar permissão pública de `find`/`findOne` para **product/category/page**.
+3. Subir o Next: `npm run dev` e testar Home, `/product/<slug>`, `/search`.
+
+Quer que eu te gere um **zip** com esses arquivos prontos pra colar?

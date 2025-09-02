@@ -1,0 +1,2603 @@
+|-- LICENSE
+|-- README.md
+|-- eslint.config.mjs
+|-- ideias.txt
+|-- ideias2.txt
+|-- my-ecommerce-backend/
+  |-- README.md
+  |-- config/
+    |-- admin.ts
+    |-- api.ts
+    |-- database.ts
+    |-- middlewares.ts
+    |-- plugins.ts
+    |-- server.ts
+  |-- database/
+    |-- migrations/
+  |-- favicon.png
+  |-- package-lock.json
+  |-- package.json
+  |-- public/
+    |-- robots.txt
+    |-- uploads/
+  |-- src/
+    |-- admin/
+      |-- app.example.tsx
+      |-- tsconfig.json
+      |-- vite.config.example.ts
+    |-- api/
+      |-- category/
+      |-- customer/
+      |-- order/
+      |-- payment/
+      |-- product/
+      |-- store/
+    |-- components/
+      |-- order/
+      |-- product/
+      |-- shared/
+    |-- extensions/
+    |-- index.ts
+  |-- tsconfig.json
+  |-- yarn.lock
+|-- next.config.ts
+|-- package-lock.json
+|-- package.json
+|-- postcss.config.mjs
+|-- public/
+  |-- file.svg
+  |-- globe.svg
+  |-- icons8-market-color-16.png
+  |-- icons8-market-color-32.png
+  |-- icons8-market-color-96.png
+  |-- next.svg
+  |-- vercel.svg
+  |-- window.svg
+|-- src/
+  |-- app/
+    |-- [page]/
+      |-- opengraph-image.tsx
+      |-- page.tsx
+    |-- api/
+      |-- revalidate/
+    |-- cart/
+      |-- page.tsx
+    |-- components/
+      |-- carousel.tsx
+      |-- cart/
+        |-- CartContent.tsx
+        |-- add-to-cart.tsx
+        |-- cart-context.tsx
+        |-- modal.tsx
+      |-- grid/
+        |-- index.tsx
+        |-- three-items.tsx
+        |-- tile.tsx
+      |-- icons/
+        |-- logo.tsx
+      |-- label.tsx
+      |-- loading-dots.tsx
+      |-- logo-square.tsx
+      |-- opengraph-image.tsx
+      |-- price.tsx
+      |-- product/
+        |-- ProductCard.tsx
+        |-- ProductGrid.tsx
+        |-- gallery.tsx
+        |-- product-context.tsx
+        |-- product-description.tsx
+        |-- variant-selector.tsx
+      |-- prose.tsx
+      |-- ui/
+        |-- button.tsx
+        |-- card.tsx
+        |-- dialog.tsx
+      |-- welcome-toast.tsx
+    |-- error.tsx
+    |-- favicon.ico
+    |-- lib/
+      |-- api.ts
+      |-- asaas.ts
+      |-- constants.tsx
+      |-- utils.ts
+    |-- opengraph-image.tsx
+    |-- page.tsx
+    |-- product/
+      |-- [handle]/
+      |-- [slug]/
+        |-- page.tsx
+    |-- robots.ts
+    |-- search/
+      |-- [collection]/
+        |-- opengraph-image.tsx
+        |-- page.tsx
+      |-- children-wrapper.tsx
+      |-- loading.tsx
+      |-- page.tsx
+    |-- sitemap.ts
+    |-- styles/
+    |-- types/
+      |-- index.ts
+|-- tsconfig.json
+
+
+File contents:
+
+|-- LICENSE
+|-- README.md
+  Content:
+    # NeoMercado
+    Headless e-commerce built with Strapi, Next.js, Tailwind CSS, and Stripe/Mercado Pago. A modern, fast, and scalable solution.
+|-- eslint.config.mjs
+  Content:
+    import { dirname } from "path";
+    import { fileURLToPath } from "url";
+    import { FlatCompat } from "@eslint/eslintrc";
+    
+    const __filename = fileURLToPath(import.meta.url);
+    const __dirname = dirname(__filename);
+    
+    const compat = new FlatCompat({
+      baseDirectory: __dirname,
+    });
+    
+    const eslintConfig = [
+      ...compat.extends("next/core-web-vitals", "next/typescript"),
+    ];
+    
+    export default eslintConfig;
+|-- ideias.txt
+|-- ideias2.txt
+|-- my-ecommerce-backend/
+  |-- README.md
+    Content:
+      # 🚀 Getting started with Strapi
+      
+      Strapi comes with a full featured [Command Line Interface](https://docs.strapi.io/dev-docs/cli) (CLI) which lets you scaffold and manage your project in seconds.
+      
+      ### `develop`
+      
+      Start your Strapi application with autoReload enabled. [Learn more](https://docs.strapi.io/dev-docs/cli#strapi-develop)
+      
+      ```
+      npm run develop
+      # or
+      yarn develop
+      ```
+      
+      ### `start`
+      
+      Start your Strapi application with autoReload disabled. [Learn more](https://docs.strapi.io/dev-docs/cli#strapi-start)
+      
+      ```
+      npm run start
+      # or
+      yarn start
+      ```
+      
+      ### `build`
+      
+      Build your admin panel. [Learn more](https://docs.strapi.io/dev-docs/cli#strapi-build)
+      
+      ```
+      npm run build
+      # or
+      yarn build
+      ```
+      
+      ## ⚙️ Deployment
+      
+      Strapi gives you many possible deployment options for your project including [Strapi Cloud](https://cloud.strapi.io). Browse the [deployment section of the documentation](https://docs.strapi.io/dev-docs/deployment) to find the best solution for your use case.
+      
+      ```
+      yarn strapi deploy
+      ```
+      
+      ## 📚 Learn more
+      
+      - [Resource center](https://strapi.io/resource-center) - Strapi resource center.
+      - [Strapi documentation](https://docs.strapi.io) - Official Strapi documentation.
+      - [Strapi tutorials](https://strapi.io/tutorials) - List of tutorials made by the core team and the community.
+      - [Strapi blog](https://strapi.io/blog) - Official Strapi blog containing articles made by the Strapi team and the community.
+      - [Changelog](https://strapi.io/changelog) - Find out about the Strapi product updates, new features and general improvements.
+      
+      Feel free to check out the [Strapi GitHub repository](https://github.com/strapi/strapi). Your feedback and contributions are welcome!
+      
+      ## ✨ Community
+      
+      - [Discord](https://discord.strapi.io) - Come chat with the Strapi community including the core team.
+      - [Forum](https://forum.strapi.io/) - Place to discuss, ask questions and find answers, show your Strapi project and get feedback or just talk with other Community members.
+      - [Awesome Strapi](https://github.com/strapi/awesome-strapi) - A curated list of awesome things related to Strapi.
+      
+      ---
+      
+      <sub>🤫 Psst! [Strapi is hiring](https://strapi.io/careers).</sub>
+  |-- config/
+    |-- admin.ts
+      Content:
+        export default ({ env }) => ({
+          auth: {
+            secret: env('ADMIN_JWT_SECRET'),
+          },
+          apiToken: {
+            salt: env('API_TOKEN_SALT'),
+          },
+          transfer: {
+            token: {
+              salt: env('TRANSFER_TOKEN_SALT'),
+            },
+          },
+          secrets: {
+            encryptionKey: env('ENCRYPTION_KEY'),
+          },
+          flags: {
+            nps: env.bool('FLAG_NPS', true),
+            promoteEE: env.bool('FLAG_PROMOTE_EE', true),
+          },
+        });
+    |-- api.ts
+      Content:
+        export default {
+          rest: {
+            defaultLimit: 25,
+            maxLimit: 100,
+            withCount: true,
+          },
+        };
+    |-- database.ts
+      Content:
+        import path from 'path';
+        
+        export default ({ env }) => {
+          const client = env('DATABASE_CLIENT', 'sqlite');
+        
+          const connections = {
+            mysql: {
+              connection: {
+                host: env('DATABASE_HOST', 'localhost'),
+                port: env.int('DATABASE_PORT', 3306),
+                database: env('DATABASE_NAME', 'strapi'),
+                user: env('DATABASE_USERNAME', 'strapi'),
+                password: env('DATABASE_PASSWORD', 'strapi'),
+                ssl: env.bool('DATABASE_SSL', false) && {
+                  key: env('DATABASE_SSL_KEY', undefined),
+                  cert: env('DATABASE_SSL_CERT', undefined),
+                  ca: env('DATABASE_SSL_CA', undefined),
+                  capath: env('DATABASE_SSL_CAPATH', undefined),
+                  cipher: env('DATABASE_SSL_CIPHER', undefined),
+                  rejectUnauthorized: env.bool('DATABASE_SSL_REJECT_UNAUTHORIZED', true),
+                },
+              },
+              pool: { min: env.int('DATABASE_POOL_MIN', 2), max: env.int('DATABASE_POOL_MAX', 10) },
+            },
+            postgres: {
+              connection: {
+                connectionString: env('DATABASE_URL'),
+                host: env('DATABASE_HOST', 'localhost'),
+                port: env.int('DATABASE_PORT', 5432),
+                database: env('DATABASE_NAME', 'strapi'),
+                user: env('DATABASE_USERNAME', 'strapi'),
+                password: env('DATABASE_PASSWORD', 'strapi'),
+                ssl: env.bool('DATABASE_SSL', false) && {
+                  key: env('DATABASE_SSL_KEY', undefined),
+                  cert: env('DATABASE_SSL_CERT', undefined),
+                  ca: env('DATABASE_SSL_CA', undefined),
+                  capath: env('DATABASE_SSL_CAPATH', undefined),
+                  cipher: env('DATABASE_SSL_CIPHER', undefined),
+                  rejectUnauthorized: env.bool('DATABASE_SSL_REJECT_UNAUTHORIZED', true),
+                },
+                schema: env('DATABASE_SCHEMA', 'public'),
+              },
+              pool: { min: env.int('DATABASE_POOL_MIN', 2), max: env.int('DATABASE_POOL_MAX', 10) },
+            },
+            sqlite: {
+              connection: {
+                filename: path.join(__dirname, '..', '..', env('DATABASE_FILENAME', '.tmp/data.db')),
+              },
+              useNullAsDefault: true,
+            },
+          };
+        
+          return {
+            connection: {
+              client,
+              ...connections[client],
+              acquireConnectionTimeout: env.int('DATABASE_CONNECTION_TIMEOUT', 60000),
+            },
+          };
+        };
+    |-- middlewares.ts
+      Content:
+        export default [
+          'strapi::logger',
+          'strapi::errors',
+          'strapi::security',
+          'strapi::cors',
+          'strapi::poweredBy',
+          'strapi::query',
+          'strapi::body',
+          'strapi::session',
+          'strapi::favicon',
+          'strapi::public',
+        ];
+    |-- plugins.ts
+      Content:
+        export default () => ({});
+    |-- server.ts
+      Content:
+        export default ({ env }) => ({
+          host: env('HOST', '0.0.0.0'),
+          port: env.int('PORT', 1337),
+          app: {
+            keys: env.array('APP_KEYS'),
+          },
+        });
+  |-- database/
+    |-- migrations/
+  |-- favicon.png
+  |-- package-lock.json
+  |-- package.json
+    Content:
+      {
+        "name": "my-ecommerce-backend",
+        "version": "0.1.0",
+        "private": true,
+        "description": "A Strapi application",
+        "scripts": {
+          "build": "strapi build",
+          "console": "strapi console",
+          "deploy": "strapi deploy",
+          "dev": "strapi develop",
+          "develop": "strapi develop",
+          "start": "strapi start",
+          "strapi": "strapi",
+          "upgrade": "npx @strapi/upgrade latest",
+          "upgrade:dry": "npx @strapi/upgrade latest --dry"
+        },
+        "dependencies": {
+          "@strapi/plugin-cloud": "5.19.0",
+          "@strapi/plugin-users-permissions": "5.19.0",
+          "@strapi/strapi": "5.19.0",
+          "better-sqlite3": "11.3.0",
+          "react": "^18.0.0",
+          "react-dom": "^18.0.0",
+          "react-router-dom": "^6.0.0",
+          "styled-components": "^6.0.0"
+        },
+        "devDependencies": {
+          "@types/node": "^20",
+          "@types/react": "^18",
+          "@types/react-dom": "^18",
+          "typescript": "^5"
+        },
+        "engines": {
+          "node": ">=18.0.0 <=22.x.x",
+          "npm": ">=6.0.0"
+        },
+        "strapi": {
+          "uuid": "bd38bb3c-10b3-4080-9780-fa815e05eb7e",
+          "installId": "38d67a6683f59cb9c5fd86898ac0d27de98bbc1cf5e494ab6b7f8129c2c4f5e1"
+        }
+      }
+  |-- public/
+    |-- robots.txt
+    |-- uploads/
+  |-- src/
+    |-- admin/
+      |-- app.example.tsx
+        Content:
+          import type { StrapiApp } from '@strapi/strapi/admin';
+          
+          export default {
+            config: {
+              locales: [
+                // 'ar',
+                // 'fr',
+                // 'cs',
+                // 'de',
+                // 'dk',
+                // 'es',
+                // 'he',
+                // 'id',
+                // 'it',
+                // 'ja',
+                // 'ko',
+                // 'ms',
+                // 'nl',
+                // 'no',
+                // 'pl',
+                // 'pt-BR',
+                // 'pt',
+                // 'ru',
+                // 'sk',
+                // 'sv',
+                // 'th',
+                // 'tr',
+                // 'uk',
+                // 'vi',
+                // 'zh-Hans',
+                // 'zh',
+              ],
+            },
+            bootstrap(app: StrapiApp) {
+              console.log(app);
+            },
+          };
+      |-- tsconfig.json
+        Content:
+          {
+            "compilerOptions": {
+              "target": "ESNext",
+              "module": "ESNext",
+              "moduleResolution": "Bundler",
+              "useDefineForClassFields": true,
+              "lib": ["DOM", "DOM.Iterable", "ESNext"],
+              "allowJs": false,
+              "skipLibCheck": true,
+              "esModuleInterop": true,
+              "allowSyntheticDefaultImports": true,
+              "strict": true,
+              "forceConsistentCasingInFileNames": true,
+              "resolveJsonModule": true,
+              "noEmit": true,
+              "jsx": "react-jsx"
+            },
+            "include": ["../plugins/**/admin/src/**/*", "./"],
+            "exclude": ["node_modules/", "build/", "dist/", "**/*.test.ts"]
+          }
+      |-- vite.config.example.ts
+        Content:
+          import { mergeConfig, type UserConfig } from 'vite';
+          
+          export default (config: UserConfig) => {
+            // Important: always return the modified config
+            return mergeConfig(config, {
+              resolve: {
+                alias: {
+                  '@': '/src',
+                },
+              },
+            });
+          };
+    |-- api/
+      |-- category/
+      |-- customer/
+      |-- order/
+      |-- payment/
+      |-- product/
+      |-- store/
+    |-- components/
+      |-- order/
+      |-- product/
+      |-- shared/
+    |-- extensions/
+    |-- index.ts
+      Content:
+        // import type { Core } from '@strapi/strapi';
+        
+        export default {
+          /**
+           * An asynchronous register function that runs before
+           * your application is initialized.
+           *
+           * This gives you an opportunity to extend code.
+           */
+          register(/* { strapi }: { strapi: Core.Strapi } */) {},
+        
+          /**
+           * An asynchronous bootstrap function that runs before
+           * your application gets started.
+           *
+           * This gives you an opportunity to set up your data model,
+           * run jobs, or perform some special logic.
+           */
+          bootstrap(/* { strapi }: { strapi: Core.Strapi } */) {},
+        };
+  |-- tsconfig.json
+    Content:
+      {
+        "compilerOptions": {
+          "module": "CommonJS",
+          "moduleResolution": "Node",
+          "lib": ["ES2020"],
+          "target": "ES2019",
+          "strict": false,
+          "skipLibCheck": true,
+          "forceConsistentCasingInFileNames": true,
+          "incremental": true,
+          "esModuleInterop": true,
+          "resolveJsonModule": true,
+          "noEmitOnError": true,
+          "noImplicitThis": true,
+          "outDir": "dist",
+          "rootDir": "."
+        },
+        "include": [
+          // Include root files
+          "./",
+          // Include all ts files
+          "./**/*.ts",
+          // Include all js files
+          "./**/*.js",
+          // Force the JSON files in the src folder to be included
+          "src/**/*.json"
+        ],
+      
+        "exclude": [
+          "node_modules/",
+          "build/",
+          "dist/",
+          ".cache/",
+          ".tmp/",
+      
+          // Do not include admin files in the server compilation
+          "src/admin/",
+          // Do not include test files
+          "**/*.test.*",
+          // Do not include plugins in the server compilation
+          "src/plugins/**"
+        ]
+      }
+  |-- yarn.lock
+|-- next.config.ts
+  Content:
+    import type { NextConfig } from "next";
+    
+    const nextConfig: NextConfig = {
+      /* config options here */
+    };
+    
+    export default nextConfig;
+|-- package-lock.json
+|-- package.json
+  Content:
+    {
+      "name": "neomercado",
+      "version": "0.1.0",
+      "private": true,
+      "scripts": {
+        "dev": "next dev --turbopack",
+        "build": "next build",
+        "start": "next start",
+        "lint": "next lint"
+      },
+      "dependencies": {
+        "@headlessui/react": "^2.2.4",
+        "@heroicons/react": "^2.2.0",
+        "@tailwindcss/typography": "^0.5.16",
+        "asaas-node-sdk": "^0.1.0",
+        "axios": "^1.10.0",
+        "components": "^0.1.0",
+        "geist": "^1.4.2",
+        "mercadopago": "^2.8.0",
+        "next": "15.3.4",
+        "prettier": "^3.6.1",
+        "react": "^19.0.0",
+        "react-dom": "^19.0.0",
+        "sonner": "^2.0.6",
+        "stripe": "^18.2.1"
+      },
+      "devDependencies": {
+        "@eslint/eslintrc": "^3",
+        "@tailwindcss/container-queries": "^0.1.1",
+        "@tailwindcss/postcss": "^4",
+        "@types/node": "^20",
+        "@types/react": "^19",
+        "@types/react-dom": "^19",
+        "eslint": "^9",
+        "eslint-config-next": "15.3.4",
+        "tailwindcss": "^4",
+        "typescript": "^5"
+      }
+    }
+|-- postcss.config.mjs
+  Content:
+    const config = {
+      plugins: ["@tailwindcss/postcss"],
+    };
+    
+    export default config;
+|-- public/
+  |-- file.svg
+  |-- globe.svg
+  |-- icons8-market-color-16.png
+  |-- icons8-market-color-32.png
+  |-- icons8-market-color-96.png
+  |-- next.svg
+  |-- vercel.svg
+  |-- window.svg
+|-- src/
+  |-- app/
+    |-- [page]/
+      |-- opengraph-image.tsx
+        Content:
+          import OpengraphImage from "@/app/components/opengraph-image";
+          import { getPage } from "@/app/lib/api";
+          
+          export default async function Image({ params }: { params: { page: string } }) {
+            const pageData = await getPage(params.page);
+          
+            // ✅ Verificação segura
+            if (!pageData) {
+              const fallbackTitle = "Página não encontrada";
+              return await OpengraphImage({ title: fallbackTitle });
+            }
+          
+            const title = pageData.seo?.title || pageData.title;
+          
+            return await OpengraphImage({ title });
+          }
+      |-- page.tsx
+        Content:
+          // src/app/[page]/page.tsx
+          import type { Metadata } from "next";
+          import Prose from "@/app/components/prose";
+          import { getPage } from "@/app/lib/api";
+          import { notFound } from "next/navigation";
+          
+          type Props = {
+            params: Promise<{ page: string }>;
+            // se você vier a usar searchParams, descomente e tipifique como Promise:
+            // searchParams: Promise<{ [key: string]: string | undefined }>;
+          };
+          
+          export async function generateMetadata({ params }: Props): Promise<Metadata> {
+            const { page } = await params;
+            const pageData = await getPage(page);
+            if (!pageData) notFound();
+          
+            return {
+              title: pageData.seo?.title || pageData.title,
+              description: pageData.seo?.description || pageData.bodySummary,
+              openGraph: {
+                publishedTime: pageData.createdAt,
+                modifiedTime: pageData.updatedAt,
+                type: "article",
+              },
+            };
+          }
+          
+          export default async function Page({ params }: Props) {
+            const { page } = await params;
+            const pageData = await getPage(page);
+            if (!pageData) notFound();
+          
+            return (
+              <>
+                <h1 className="mb-8 text-5xl font-bold">{pageData.title}</h1>
+                <Prose className="mb-8" html={pageData.body} />
+                <p className="text-sm italic">
+                  {`This document was last updated on ${new Intl.DateTimeFormat(
+                    undefined,
+                    {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    },
+                  ).format(new Date(pageData.updatedAt))}.`}
+                </p>
+              </>
+            );
+          }
+    |-- api/
+      |-- revalidate/
+    |-- cart/
+      |-- page.tsx
+        Content:
+          "use client";
+          import { Suspense } from "react";
+          import dynamic from "next/dynamic";
+          
+          const CartContent = dynamic(() => import("../components/cart/CartContent"), {
+            ssr: false,
+            loading: () => (
+              <div className="text-center py-12">Carregando carrinho...</div>
+            ),
+          });
+          
+          export default function CartPage() {
+            return (
+              <Suspense fallback={<div className="text-center py-12">Carregando...</div>}>
+                <CartContent />
+              </Suspense>
+            );
+          }
+    |-- components/
+      |-- carousel.tsx
+        Content:
+          import { getCollectionProducts } from "@/app/lib/api";
+          import { GridTileImage } from "./grid/tile";
+          
+          export async function Carousel() {
+            const products = await getCollectionProducts("hidden-homepage-carousel");
+          
+            if (!products.length) return null;
+          
+            const repeated = [...products, ...products, ...products];
+          
+            return (
+              <div className="w-full overflow-x-auto pb-6 pt-1">
+                <ul className="flex animate-carousel gap-4">
+                  {repeated.map((product, i) => (
+                    <li
+                      key={`${product.slug}-${i}`}
+                      className="relative aspect-square h-[30vh] max-h-[275px] w-2/3 max-w-[475px] flex-none md:w-1/3"
+                    >
+                      <Link
+                        href={`/product/${product.slug}`}
+                        className="relative h-full w-full"
+                      >
+                        <GridTileImage
+                          alt={product.title}
+                          label={{
+                            title: product.title,
+                            amount: String(product.price),
+                            currencyCode: "BRL",
+                          }}
+                          src={product.image.url}
+                          fill
+                          sizes="(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 50vw"
+                        />
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            );
+          }
+      |-- cart/
+        |-- CartContent.tsx
+          Content:
+            // Exemplo mínimo para `/components/cart/CartContent.tsx`
+            "use client";
+            
+            import { useCart } from "./cart-context";
+            
+            export default function CartContent() {
+              const { items } = useCart();
+            
+              if (!items.length) return <div>Seu carrinho está vazio.</div>;
+            
+              return (
+                <ul>
+                  {items.map(({ product, quantity }) => (
+                    <li key={product.id}>
+                      {quantity} × {product.title} - R$ {product.price}
+                    </li>
+                  ))}
+                </ul>
+              );
+            }
+        |-- add-to-cart.tsx
+          Content:
+            "use client";
+            
+            import { useState } from "react";
+            import { Product } from "@/app/types";
+            import { useCart } from "../cart/cart-context";
+            import { Button } from "../ui/button";
+            
+            interface AddToCartProps {
+              product: Product;
+            }
+            
+            export function AddToCart({ product }: AddToCartProps) {
+              const { items, setItems } = useCart();
+              const [quantity, setQuantity] = useState(1);
+            
+              function handleAddToCart() {
+                const existingIndex = items.findIndex(
+                  (item) => item.product.id === product.id,
+                );
+                let newItems;
+            
+                if (existingIndex >= 0) {
+                  newItems = [...items];
+                  newItems[existingIndex].quantity += quantity;
+                } else {
+                  newItems = [...items, { product, quantity }];
+                }
+            
+                setItems(newItems);
+                setQuantity(1);
+                // Opcional: aviso para o usuário, por exemplo toast
+                alert(`${quantity} × ${product.title} adicionado ao carrinho`);
+              }
+            
+              return (
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    handleAddToCart();
+                  }}
+                  className="flex items-center gap-4"
+                >
+                  <input
+                    type="number"
+                    min={1}
+                    max={product.stock}
+                    value={quantity}
+                    onChange={(e) =>
+                      setQuantity(
+                        Math.min(Math.max(1, Number(e.target.value)), product.stock),
+                      )
+                    }
+                    className="w-20 rounded border px-3 py-1 text-center"
+                    aria-label="Quantidade"
+                  />
+                  <Button type="submit" disabled={product.stock === 0}>
+                    Adicionar ao carrinho
+                  </Button>
+                </form>
+              );
+            }
+        |-- cart-context.tsx
+          Content:
+            "use client";
+            
+            import {
+              createContext,
+              useContext,
+              useEffect,
+              useState,
+              ReactNode,
+            } from "react";
+            import { Category } from "@/app/types";
+            
+            interface CartItem {
+              product: {
+                id: number;
+                title: string;
+                price: number;
+                image: { url: string };
+                slug: string;
+                description: string;
+                stock: number;
+                categories: Category[];
+              };
+              quantity: number;
+            }
+            
+            interface CartContextType {
+              items: CartItem[];
+              setItems: (items: CartItem[]) => void;
+            }
+            
+            const CartContext = createContext<CartContextType | undefined>(undefined);
+            
+            export function CartProvider({ children }: { children: ReactNode }) {
+              const [items, setItems] = useState<CartItem[]>([]);
+            
+              useEffect(() => {
+                try {
+                  const stored = localStorage.getItem("cart");
+                  if (stored) {
+                    setItems(JSON.parse(stored));
+                  }
+                } catch (err) {
+                  console.warn("Falha ao carregar carrinho do localStorage", err);
+                }
+              }, []);
+            
+              useEffect(() => {
+                localStorage.setItem("cart", JSON.stringify(items));
+              }, [items]);
+            
+              return (
+                <CartContext.Provider value={{ items, setItems }}>
+                  {children}
+                </CartContext.Provider>
+              );
+            }
+            
+            export function useCart() {
+              const context = useContext(CartContext);
+              if (!context) {
+                throw new Error("useCart must be used within a CartProvider");
+              }
+              return context;
+            }
+        |-- modal.tsx
+          Content:
+            // src/app/components/cart/modal.tsx
+            "use client";
+            
+            import { Fragment, useState } from "react";
+            import { Dialog, Transition } from "@headlessui/react";
+            
+            export default function CartModal() {
+              const [isOpen, setIsOpen] = useState(false);
+            
+              return (
+                <>
+                  <button
+                    onClick={() => setIsOpen(true)}
+                    className="bg-blue-600 text-white px-4 py-2 rounded"
+                  >
+                    Abrir Carrinho
+                  </button>
+                  <Transition show={isOpen} as={Fragment}>
+                    <Dialog onClose={() => setIsOpen(false)} className="relative z-50">
+                      <Transition.Child
+                        as={Fragment}
+                        enter="ease-out duration-300"
+                        enterFrom="opacity-0 translate-y-4"
+                        enterTo="opacity-100 translate-y-0"
+                        leave="ease-in duration-200"
+                        leaveFrom="opacity-100 translate-y-0"
+                        leaveTo="opacity-0 translate-y-4"
+                      >
+                        <div className="fixed inset-0 bg-black/40" aria-hidden="true" />
+                      </Transition.Child>
+                      <div className="fixed inset-0 flex w-screen items-center justify-center p-4">
+                        <Transition.Child
+                          as={Fragment}
+                          enter="ease-out duration-300"
+                          enterFrom="opacity-0"
+                          enterTo="opacity-100"
+                          leave="ease-in duration-200"
+                          leaveFrom="opacity-100"
+                          leaveTo="opacity-0"
+                        >
+                          <Dialog.Panel className="mx-auto w-full max-w-lg rounded bg-white p-6">
+                            <Dialog.Title className="font-bold text-lg mb-4">
+                              Carrinho
+                            </Dialog.Title>
+                            {/* Conteúdo do carrinho aqui */}
+                            <button
+                              onClick={() => setIsOpen(false)}
+                              className="mt-4 bg-gray-200 px-2 py-1 rounded"
+                            >
+                              Fechar
+                            </button>
+                          </Dialog.Panel>
+                        </Transition.Child>
+                      </div>
+                    </Dialog>
+                  </Transition>
+                </>
+              );
+            }
+      |-- grid/
+        |-- index.tsx
+          Content:
+            import clsx from 'clsx';
+            
+            function Grid(props: React.ComponentProps<'ul'>) {
+              return (
+                <ul {...props} className={clsx('grid grid-flow-row gap-4', props.className)}>
+                  {props.children}
+                </ul>
+              );
+            }
+            
+            function GridItem(props: React.ComponentProps<'li'>) {
+              return (
+                <li {...props} className={clsx('aspect-square transition-opacity', props.className)}>
+                  {props.children}
+                </li>
+              );
+            }
+            
+            Grid.Item = GridItem;
+            
+            export default Grid;
+        |-- three-items.tsx
+          Content:
+            import Link from "next/link";
+            import { getCollectionProducts } from "@/app/lib/api";
+            import { GridTileImage } from "./tile";
+            
+            type ThreeItemGridItemProps = {
+              product: {
+                slug: string;
+                title: string;
+                price: number;
+                image: { url: string };
+              };
+              size: "full" | "half";
+              priority?: boolean;
+            };
+            
+            function ThreeItemGridItem({
+              product,
+              size,
+              priority,
+            }: ThreeItemGridItemProps) {
+              const classes =
+                size === "full"
+                  ? "md:col-span-4 md:row-span-2"
+                  : "md:col-span-2 md:row-span-1";
+              return (
+                <div className={classes}>
+                  <Link
+                    href={`/product/${product.slug}`}
+                    prefetch
+                    className="block aspect-square w-full h-full"
+                  >
+                    <GridTileImage
+                      src={product.image.url}
+                      alt={product.title}
+                      fill
+                      sizes={
+                        size === "full"
+                          ? "(min-width: 768px) 66vw, 100vw"
+                          : "(min-width: 768px) 33vw, 100vw"
+                      }
+                      priority={priority}
+                      label={{
+                        title: product.title,
+                        amount: String(product.price),
+                        currencyCode: "BRL",
+                      }}
+                    />
+                  </Link>
+                </div>
+              );
+            }
+            
+            export async function ThreeItemGrid() {
+              const items = await getCollectionProducts("hidden-homepage-featured-items");
+              if (items.length < 3) return null;
+              const [first, second, third] = items;
+              return (
+                <section className="mx-auto grid max-w-[--breakpoint-2xl] gap-4 px-4 pb-4 md:grid-cols-6 md:grid-rows-2 lg:max-h-[calc(100vh-200px)]">
+                  <ThreeItemGridItem product={first} size="full" priority />
+                  <ThreeItemGridItem product={second} size="half" priority />
+                  <ThreeItemGridItem product={third} size="half" />
+                </section>
+              );
+            }
+        |-- tile.tsx
+          Content:
+            import clsx from "clsx";
+            import Image from "next/image";
+            import Label from "../label";
+            
+            export function GridTileImage({
+              isInteractive = true,
+              active,
+              label,
+              alt = "",
+              ...props
+            }: {
+              isInteractive?: boolean;
+              active?: boolean;
+              label?: {
+                title: string;
+                amount: string;
+                currencyCode: string;
+                position?: "bottom" | "center";
+              };
+              alt?: string; // ✅ Adiciona alt como prop
+            } & Omit<React.ComponentProps<typeof Image>, "alt">) {
+              return (
+                <div
+                  className={clsx(
+                    "group flex h-full w-full items-center justify-center overflow-hidden rounded-lg border bg-white hover:border-blue-600 dark:bg-black",
+                    {
+                      relative: label,
+                      "border-2 border-blue-600": active,
+                      "border-neutral-200 dark:border-neutral-800": !active,
+                    },
+                  )}
+                >
+                  {props.src ? (
+                    <Image
+                      alt={alt}
+                      className={clsx("relative h-full w-full object-contain", {
+                        "transition duration-300 ease-in-out group-hover:scale-105":
+                          isInteractive,
+                      })}
+                      {...props}
+                    />
+                  ) : null}
+                  {label ? (
+                    <Label
+                      title={label.title}
+                      amount={label.amount}
+                      currencyCode={label.currencyCode}
+                      position={label.position}
+                    />
+                  ) : null}
+                </div>
+              );
+            }
+      |-- icons/
+        |-- logo.tsx
+          Content:
+            import clsx from 'clsx';
+            
+            export default function LogoIcon(props: React.ComponentProps<'svg'>) {
+              return (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  aria-label={`${process.env.SITE_NAME} logo`}
+                  viewBox="0 0 32 28"
+                  {...props}
+                  className={clsx('h-4 w-4 fill-black dark:fill-white', props.className)}
+                >
+                  <path d="M21.5758 9.75769L16 0L0 28H11.6255L21.5758 9.75769Z" />
+                  <path d="M26.2381 17.9167L20.7382 28H32L26.2381 17.9167Z" />
+                </svg>
+              );
+            }
+      |-- label.tsx
+        Content:
+          import clsx from 'clsx';
+          import Price from './price';
+          
+          const Label = ({
+            title,
+            amount,
+            currencyCode,
+            position = 'bottom'
+          }: {
+            title: string;
+            amount: string;
+            currencyCode: string;
+            position?: 'bottom' | 'center';
+          }) => {
+            return (
+              <div
+                className={clsx('absolute bottom-0 left-0 flex w-full px-4 pb-4 @container/label', {
+                  'lg:px-20 lg:pb-[35%]': position === 'center'
+                })}
+              >
+                <div className="flex items-center rounded-full border bg-white/70 p-1 text-xs font-semibold text-black backdrop-blur-md dark:border-neutral-800 dark:bg-black/70 dark:text-white">
+                  <h3 className="mr-4 line-clamp-2 grow pl-2 leading-none tracking-tight">{title}</h3>
+                  <Price
+                    className="flex-none rounded-full bg-blue-600 p-2 text-white"
+                    amount={amount}
+                    currencyCode={currencyCode}
+                    currencyCodeClassName="hidden @[275px]/label:inline"
+                  />
+                </div>
+              </div>
+            );
+          };
+          
+          export default Label;
+      |-- loading-dots.tsx
+        Content:
+          import clsx from 'clsx';
+          
+          const dots = 'mx-[1px] inline-block h-1 w-1 animate-blink rounded-md';
+          
+          const LoadingDots = ({ className }: { className: string }) => {
+            return (
+              <span className="mx-2 inline-flex items-center">
+                <span className={clsx(dots, className)} />
+                <span className={clsx(dots, 'animation-delay-[200ms]', className)} />
+                <span className={clsx(dots, 'animation-delay-[400ms]', className)} />
+              </span>
+            );
+          };
+          
+          export default LoadingDots;
+      |-- logo-square.tsx
+        Content:
+          import clsx from 'clsx';
+          import LogoIcon from './icons/logo';
+          
+          export default function LogoSquare({ size }: { size?: 'sm' | undefined }) {
+            return (
+              <div
+                className={clsx(
+                  'flex flex-none items-center justify-center border border-neutral-200 bg-white dark:border-neutral-700 dark:bg-black',
+                  {
+                    'h-[40px] w-[40px] rounded-xl': !size,
+                    'h-[30px] w-[30px] rounded-lg': size === 'sm'
+                  }
+                )}
+              >
+                <LogoIcon
+                  className={clsx({
+                    'h-[16px] w-[16px]': !size,
+                    'h-[10px] w-[10px]': size === 'sm'
+                  })}
+                />
+              </div>
+            );
+          }
+      |-- opengraph-image.tsx
+        Content:
+          import { ImageResponse } from "next/og";
+          import LogoIcon from "./icons/logo";
+          
+          export type Props = {
+            title?: string;
+          };
+          
+          export default async function OpengraphImage(
+            props?: Props,
+          ): Promise<ImageResponse> {
+            const { title } = {
+              ...{
+                title: process.env.SITE_NAME,
+              },
+              ...props,
+            };
+          
+            return new ImageResponse(
+              (
+                <div tw="flex h-full w-full flex-col items-center justify-center bg-black">
+                  <div tw="flex flex-none items-center justify-center border border-neutral-700 h-[160px] w-[160px] rounded-3xl">
+                    <LogoIcon width="64" height="58" fill="white" />
+                  </div>
+                  <p tw="mt-12 text-6xl font-bold text-white">{title}</p>
+                </div>
+              ),
+              {
+                width: 1200,
+                height: 630,
+                // fonts: [] removido
+              },
+            );
+          }
+      |-- price.tsx
+        Content:
+          import clsx from 'clsx';
+          
+          const Price = ({
+            amount,
+            className,
+            currencyCode = 'USD',
+            currencyCodeClassName
+          }: {
+            amount: string;
+            className?: string;
+            currencyCode: string;
+            currencyCodeClassName?: string;
+          } & React.ComponentProps<'p'>) => (
+            <p suppressHydrationWarning={true} className={className}>
+              {`${new Intl.NumberFormat(undefined, {
+                style: 'currency',
+                currency: currencyCode,
+                currencyDisplay: 'narrowSymbol'
+              }).format(parseFloat(amount))}`}
+              <span className={clsx('ml-1 inline', currencyCodeClassName)}>{`${currencyCode}`}</span>
+            </p>
+          );
+          
+          export default Price;
+      |-- product/
+        |-- ProductCard.tsx
+          Content:
+            import Link from "next/link";
+            import Image from "next/image";
+            import { Product } from "../../types";
+            
+            export function ProductCard({ product }: { product: Product }) {
+              return (
+                <div className="border rounded-lg overflow-hidden transition-shadow hover:shadow-md">
+                  <Link href={`/product/${product.slug}`} className="block">
+                    <div className="aspect-square bg-gray-100 flex items-center justify-center">
+                      {product.image.url ? (
+                        <Image
+                          src={product.image.url}
+                          alt={product.title}
+                          width={300}
+                          height={300}
+                          className="object-cover w-full h-full"
+                        />
+                      ) : (
+                        <div className="text-gray-500 text-center p-4">Sem imagem</div>
+                      )}
+                    </div>
+            
+                    <div className="p-4">
+                      <h2 className="font-semibold line-clamp-1">{product.title}</h2>
+                      <p className="text-primary font-medium mt-2">
+                        R$ {product.price.toFixed(2)}
+                      </p>
+                    </div>
+                  </Link>
+                </div>
+              );
+            }
+        |-- ProductGrid.tsx
+          Content:
+            import { Product } from '../../types';
+            import { ProductCard } from './ProductCard';
+            
+            export function ProductGrid({ products }: { products: Product[] }) {
+              return (
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  {products.map(p => <ProductCard key={p.id} product={p} />)}
+                </div>
+              );
+            }
+        |-- gallery.tsx
+          Content:
+            "use client";
+            
+            import { ArrowLeftIcon, ArrowRightIcon } from "@heroicons/react/24/outline";
+            import { GridTileImage } from "@/app/components/grid/tile";
+            import {
+              useProduct,
+              useUpdateURL,
+            } from "@/app/components/product/product-context";
+            import Image from "next/image";
+            
+            export function Gallery({
+              images,
+            }: {
+              images: { src: string; altText: string }[];
+            }) {
+              const { state, updateImage } = useProduct();
+              const updateURL = useUpdateURL();
+              const imageIndex = state.image ? parseInt(state.image) : 0;
+            
+              const nextImageIndex = imageIndex + 1 < images.length ? imageIndex + 1 : 0;
+              const previousImageIndex =
+                imageIndex === 0 ? images.length - 1 : imageIndex - 1;
+            
+              const buttonClassName =
+                "h-full px-6 transition-all ease-in-out hover:scale-110 hover:text-black dark:hover:text-white flex items-center justify-center";
+            
+              return (
+                <form>
+                  <div className="relative aspect-square h-full max-h-[550px] w-full overflow-hidden">
+                    {images[imageIndex] && (
+                      <Image
+                        className="h-full w-full object-contain"
+                        fill
+                        sizes="(min-width: 1024px) 66vw, 100vw"
+                        alt={images[imageIndex]?.altText as string}
+                        src={images[imageIndex]?.src as string}
+                        priority={true}
+                      />
+                    )}
+            
+                    {images.length > 1 ? (
+                      <div className="absolute bottom-[15%] flex w-full justify-center">
+                        <div className="mx-auto flex h-11 items-center rounded-full border border-white bg-neutral-50/80 text-neutral-500 backdrop-blur-sm dark:border-black dark:bg-neutral-900/80">
+                          <button
+                            formAction={() => {
+                              const newState = updateImage(previousImageIndex.toString());
+                              updateURL(newState);
+                            }}
+                            aria-label="Previous product image"
+                            className={buttonClassName}
+                          >
+                            <ArrowLeftIcon className="h-5" />
+                          </button>
+                          <div className="mx-1 h-6 w-px bg-neutral-500"></div>
+                          <button
+                            formAction={() => {
+                              const newState = updateImage(nextImageIndex.toString());
+                              updateURL(newState);
+                            }}
+                            aria-label="Next product image"
+                            className={buttonClassName}
+                          >
+                            <ArrowRightIcon className="h-5" />
+                          </button>
+                        </div>
+                      </div>
+                    ) : null}
+                  </div>
+            
+                  {images.length > 1 ? (
+                    <ul className="my-12 flex items-center flex-wrap justify-center gap-2 overflow-auto py-1 lg:mb-0">
+                      {images.map((image, index) => {
+                        const isActive = index === imageIndex;
+            
+                        return (
+                          <li key={image.src} className="h-20 w-20">
+                            <button
+                              formAction={() => {
+                                const newState = updateImage(index.toString());
+                                updateURL(newState);
+                              }}
+                              aria-label="Select product image"
+                              className="h-full w-full"
+                            >
+                              <GridTileImage
+                                alt={image.altText}
+                                src={image.src}
+                                width={80}
+                                height={80}
+                                active={isActive}
+                              />
+                            </button>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  ) : null}
+                </form>
+              );
+            }
+        |-- product-context.tsx
+          Content:
+            "use client";
+            
+            import { useRouter, useSearchParams } from "next/navigation";
+            import React, {
+              createContext,
+              useContext,
+              useMemo,
+              useCallback,
+              useState,
+            } from "react";
+            
+            type ProductState = {
+              [key: string]: string | undefined;
+            };
+            
+            type ProductContextType = {
+              state: ProductState;
+              updateOption: (name: string, value: string) => ProductState;
+              updateImage: (index: string) => ProductState;
+            };
+            
+            const ProductContext = createContext<ProductContextType | undefined>(undefined);
+            
+            export function ProductProvider({ children }: { children: React.ReactNode }) {
+              const searchParams = useSearchParams();
+            
+              const getInitialState = (): ProductState => {
+                const params: ProductState = {};
+                for (const [key, value] of searchParams.entries()) {
+                  params[key] = value;
+                }
+                return params;
+              };
+            
+              const [state, setState] = useState<ProductState>(getInitialState());
+            
+              const updateOption = useCallback(
+                (name: string, value: string): ProductState => {
+                  const newState = { ...state, [name]: value };
+                  setState(newState);
+                  return newState;
+                },
+                [state],
+              );
+            
+              const updateImage = useCallback(
+                (index: string): ProductState => {
+                  const newState = { ...state, image: index };
+                  setState(newState);
+                  return newState;
+                },
+                [state],
+              );
+            
+              const value = useMemo(
+                () => ({
+                  state,
+                  updateOption,
+                  updateImage,
+                }),
+                [state, updateOption, updateImage],
+              );
+            
+              return (
+                <ProductContext.Provider value={value}>{children}</ProductContext.Provider>
+              );
+            }
+            
+            export function useProduct() {
+              const context = useContext(ProductContext);
+              if (!context) {
+                throw new Error("useProduct must be used within a ProductProvider");
+              }
+              return context;
+            }
+            
+            export function useUpdateURL() {
+              const router = useRouter();
+            
+              return (state: ProductState) => {
+                const newParams = new URLSearchParams(window.location.search);
+                Object.entries(state).forEach(([key, value]) => {
+                  if (value !== undefined) {
+                    newParams.set(key, value);
+                  }
+                });
+                router.push(`?${newParams.toString()}`, { scroll: false });
+              };
+            }
+        |-- product-description.tsx
+          Content:
+            import Price from "../price";
+            import Prose from "../prose";
+            import { VariantSelector } from "./variant-selector";
+            import { Product } from "@/app/types";
+            import { AddToCart } from "@/app/components/cart/add-to-cart";
+            
+            // Tipos podem ser importados ou definidos aqui caso sejam usados só neste componente:
+            type ProductOption = {
+              id: string;
+              name: string;
+              values: string[];
+            };
+            
+            type ProductVariant = {
+              id: string;
+              availableForSale: boolean;
+              selectedOptions: {
+                name: string;
+                value: string;
+              }[];
+            };
+            
+            type ProductWithVariants = Product & {
+              variants?: ProductOption[];
+              variantsData?: ProductVariant[];
+              descriptionHtml?: string;
+            };
+            
+            export function ProductDescription({
+              product,
+            }: {
+              product: ProductWithVariants;
+            }) {
+              return (
+                <>
+                  <div className="mb-6 flex flex-col border-b pb-6 dark:border-neutral-700">
+                    <h1 className="mb-2 text-5xl font-medium">{product.title}</h1>
+                    <div className="mr-auto w-auto rounded-full bg-blue-600 p-2 text-sm text-white">
+                      <Price amount={String(product.price)} currencyCode="BRL" />
+                    </div>
+                  </div>
+            
+                  <VariantSelector
+                    options={product.variants || []}
+                    variants={product.variantsData || []}
+                  />
+            
+                  {product.descriptionHtml && (
+                    <Prose
+                      className="mb-6 text-sm leading-tight dark:text-white/[60%]"
+                      html={product.descriptionHtml}
+                    />
+                  )}
+            
+                  <AddToCart product={product} />
+                </>
+              );
+            }
+        |-- variant-selector.tsx
+          Content:
+            "use client";
+            
+            import clsx from "clsx";
+            import {
+              useProduct,
+              useUpdateURL,
+            } from "@/app/components/product/product-context";
+            
+            type ProductOption = {
+              id: string;
+              name: string;
+              values: string[];
+            };
+            
+            type ProductVariant = {
+              id: string;
+              availableForSale: boolean;
+              selectedOptions: {
+                name: string;
+                value: string;
+              }[];
+            };
+            
+            type Combination = {
+              id: string;
+              availableForSale: boolean;
+              [key: string]: string | boolean;
+            };
+            
+            export function VariantSelector({
+              options,
+              variants,
+            }: {
+              options: ProductOption[];
+              variants: ProductVariant[];
+            }) {
+              const { state, updateOption } = useProduct();
+              const updateURL = useUpdateURL();
+            
+              const hasNoOptionsOrJustOneOption =
+                !options.length ||
+                (options.length === 1 && options[0]?.values.length === 1);
+            
+              if (hasNoOptionsOrJustOneOption) return null;
+            
+              const combinations: Combination[] = variants.map((variant) => ({
+                id: variant.id,
+                availableForSale: variant.availableForSale,
+                ...variant.selectedOptions.reduce(
+                  (acc, opt) => {
+                    acc[opt.name.toLowerCase()] = opt.value;
+                    return acc;
+                  },
+                  {} as { [key: string]: string },
+                ),
+              }));
+            
+              return options.map((option) => {
+                const nameLC = option.name.toLowerCase();
+            
+                return (
+                  <form key={option.id}>
+                    <dl className="mb-8">
+                      <dt className="mb-4 text-sm uppercase tracking-wide">
+                        {option.name}
+                      </dt>
+                      <dd className="flex flex-wrap gap-3">
+                        {option.values.map((value) => {
+                          const optionParams = { ...state, [nameLC]: value };
+            
+                          // ✅ RESOLVIDO: tipo de v validado dentro da função
+                          const filtered = Object.entries(optionParams).filter(([k, v]) => {
+                            if (typeof v !== "string") return false;
+            
+                            return options.some(
+                              (opt) =>
+                                opt.name.toLowerCase() === k && opt.values.includes(v),
+                            );
+                          });
+            
+                          const isAvailableForSale =
+                            combinations.find((c) =>
+                              filtered.every(([k, v]) => c[k] === v && c.availableForSale),
+                            ) !== undefined;
+            
+                          const isActive = state[nameLC] === value;
+            
+                          return (
+                            <button
+                              formAction={() => {
+                                const newState = updateOption(nameLC, value);
+                                updateURL(newState);
+                              }}
+                              key={value}
+                              aria-disabled={!isAvailableForSale}
+                              disabled={!isAvailableForSale}
+                              title={`${option.name} ${value}${
+                                !isAvailableForSale ? " (Out of Stock)" : ""
+                              }`}
+                              className={clsx(
+                                "flex min-w-[48px] items-center justify-center rounded-full border bg-neutral-100 px-2 py-1 text-sm dark:border-neutral-800 dark:bg-neutral-900",
+                                {
+                                  "cursor-default ring-2 ring-blue-600": isActive,
+                                  "ring-1 ring-transparent transition duration-300 ease-in-out hover:ring-blue-600":
+                                    !isActive && isAvailableForSale,
+                                  "relative z-10 cursor-not-allowed overflow-hidden bg-neutral-100 text-neutral-500 ring-1 ring-neutral-300 before:absolute before:inset-x-0 before:-z-10 before:h-px before:-rotate-45 before:bg-neutral-300 before:transition-transform dark:bg-neutral-900 dark:text-neutral-400 dark:ring-neutral-700 dark:before:bg-neutral-700":
+                                    !isAvailableForSale,
+                                },
+                              )}
+                            >
+                              {value}
+                            </button>
+                          );
+                        })}
+                      </dd>
+                    </dl>
+                  </form>
+                );
+              });
+            }
+      |-- prose.tsx
+        Content:
+          import clsx from 'clsx';
+          
+          const Prose = ({ html, className }: { html: string; className?: string }) => {
+            return (
+              <div
+                className={clsx(
+                  'prose mx-auto max-w-6xl text-base leading-7 text-black prose-headings:mt-8 prose-headings:font-semibold prose-headings:tracking-wide prose-headings:text-black prose-h1:text-5xl prose-h2:text-4xl prose-h3:text-3xl prose-h4:text-2xl prose-h5:text-xl prose-h6:text-lg prose-a:text-black prose-a:underline prose-a:hover:text-neutral-300 prose-strong:text-black prose-ol:mt-8 prose-ol:list-decimal prose-ol:pl-6 prose-ul:mt-8 prose-ul:list-disc prose-ul:pl-6 dark:text-white dark:prose-headings:text-white dark:prose-a:text-white dark:prose-strong:text-white',
+                  className
+                )}
+                dangerouslySetInnerHTML={{ __html: html }}
+              />
+            );
+          };
+          
+          export default Prose;
+      |-- ui/
+        |-- button.tsx
+          Content:
+            import { ButtonHTMLAttributes, ReactNode } from "react";
+            
+            interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
+              children: ReactNode;
+              variant?: string;
+            }
+            
+            export function Button({ children, ...props }: Props) {
+              return (
+                <button
+                  {...props}
+                  className={`px-4 py-2 bg-primary text-white rounded hover:bg-primary/90 disabled:opacity-50 ${props.className}`}
+                >
+                  {children}
+                </button>
+              );
+            }
+        |-- card.tsx
+          Content:
+            import { ReactNode } from 'react';
+            
+            export function Card({ children }: { children: ReactNode }) {
+              return <div className="border rounded shadow-sm p-4">{children}</div>;
+            }
+        |-- dialog.tsx
+          Content:
+            import { ReactNode } from 'react';
+            
+            interface Props {
+              isOpen: boolean;
+              onClose: () => void;
+              children: ReactNode;
+            }
+            
+            export function Dialog({ isOpen, onClose, children }: Props) {
+              if (!isOpen) return null;
+              return (
+                <div className="fixed inset-0 bg-black/40 flex items-center justify-center">
+                  <div className="bg-white p-6 rounded">{children}<button onClick={onClose}>Fechar</button></div>
+                </div>
+              );
+            }
+      |-- welcome-toast.tsx
+        Content:
+          'use client';
+          
+          import { useEffect } from 'react';
+          import { toast } from 'sonner';
+          
+          export function WelcomeToast() {
+            useEffect(() => {
+              // ignore if screen height is too small
+              if (window.innerHeight < 650) return;
+              if (!document.cookie.includes('welcome-toast=2')) {
+                toast('🛍️ Welcome to Next.js Commerce!', {
+                  id: 'welcome-toast',
+                  duration: Infinity,
+                  onDismiss: () => {
+                    document.cookie = 'welcome-toast=2; max-age=31536000; path=/';
+                  },
+                  description: (
+                    <>
+                      This is a high-performance, SSR storefront powered by Shopify, Next.js, and Vercel.{' '}
+                      <a
+                        href="https://vercel.com/templates/next.js/nextjs-commerce"
+                        className="text-blue-600 hover:underline"
+                        target="_blank"
+                      >
+                        Deploy your own
+                      </a>
+                      .
+                    </>
+                  )
+                });
+              }
+            }, []);
+          
+            return null;
+          }
+    |-- error.tsx
+      Content:
+        'use client';
+        
+        export default function Error({ reset }: { reset: () => void }) {
+          return (
+            <div className="mx-auto my-4 flex max-w-xl flex-col rounded-lg border border-neutral-200 bg-white p-8 md:p-12 dark:border-neutral-800 dark:bg-black">
+              <h2 className="text-xl font-bold">Oh no!</h2>
+              <p className="my-2">
+                There was an issue with our storefront. This could be a temporary issue, please try your
+                action again.
+              </p>
+              <button
+                className="mx-auto mt-4 flex w-full items-center justify-center rounded-full bg-blue-600 p-4 tracking-wide text-white hover:opacity-90"
+                onClick={() => reset()}
+              >
+                Try Again
+              </button>
+            </div>
+          );
+        }
+    |-- favicon.ico
+    |-- lib/
+      |-- api.ts
+        Content:
+          import { Product, Category } from "../types";
+          
+          const API_URL = (process.env.NEXT_PUBLIC_STRAPI_URL || "https://seu-strapi") + "/api";
+          
+          /* ------------------------- HANDLERS UTIL ------------------------- */
+          
+          async function handle404(res: Response) {
+            if (!res.ok)
+              throw new Error(
+                `API ${res.url} failed: ${res.status} - ${await res.text()}`,
+              );
+            return res.json();
+          }
+          
+          async function safeFetch<T>(
+            input: RequestInfo,
+            init?: RequestInit,
+          ): Promise<T | null> {
+            try {
+              const response = await fetch(input, {
+                ...init,
+                cache: process.env.NODE_ENV === "production" ? "force-cache" : "no-store",
+              });
+              return await handle404(response);
+            } catch (error) {
+              console.error(`❌ Falha ao buscar ${input.toString()}:`, error);
+              return null;
+            }
+          }
+          
+          /* ---------------------------- TIPOS RAW -------------------------- */
+          
+          interface StrapiCategory {
+            id: number;
+            name: string;
+            slug: string;
+            updatedAt?: string;
+          }
+          
+          interface StrapiFile {
+            url: string;
+          }
+          
+          interface StrapiProduct {
+            id: number;
+            name: string;
+            description: string;
+            price: string;
+            slug: string;
+            images: StrapiFile[];
+            stock: number;
+            updatedAt?: string;
+            categories: StrapiCategory[];
+          }
+          
+          interface StrapiPage {
+            id: number;
+            title: string;
+            slug: string;
+            body: string;
+            bodySummary: string;
+            createdAt: string;
+            updatedAt: string;
+            seo?: {
+              title?: string;
+              description?: string;
+            };
+          }
+          
+          /* ------------------------ TRANSFORMADORES ------------------------ */
+          
+          function mapStrapiProduct(p: StrapiProduct): Product {
+            return {
+              id: p.id,
+              title: p.name,
+              description: p.description,
+              price: parseFloat(p.price),
+              slug: p.slug,
+              image: { url: p.images[0]?.url || "" },
+              stock: p.stock,
+              categories: p.categories.map(({ id, name, slug }) => ({ id, name, slug })),
+            };
+          }
+          
+          /* ---------------------------- FETCHERS --------------------------- */
+          
+          // Categorias básicas
+          export async function fetchCategories(): Promise<Category[]> {
+            const data = await safeFetch<StrapiCategory[]>(`${API_URL}/categories`);
+            return data?.map(({ id, name, slug }) => ({ id, name, slug })) || [];
+          }
+          
+          // Categorias completas para sitemap
+          export async function getCollections(): Promise<
+            { id: number; title: string; slug: string; updatedAt?: string }[]
+          > {
+            const data = await safeFetch<StrapiCategory[]>(`${API_URL}/categories`);
+            return (
+              data?.map((c) => ({
+                id: c.id,
+                title: c.name,
+                slug: c.slug,
+                updatedAt: c.updatedAt,
+              })) || []
+            );
+          }
+          
+          // Todos os produtos
+          export async function fetchProducts(): Promise<Product[]> {
+            const query = `_limit=100&_sort=id:desc&_populate=images,categories`;
+            const data = await safeFetch<StrapiProduct[]>(`${API_URL}/products?${query}`);
+            return data?.map(mapStrapiProduct) || [];
+          }
+          
+          // Produto único por slug
+          export async function fetchProductBySlug(
+            slug: string,
+          ): Promise<Product | null> {
+            const data = await safeFetch<StrapiProduct[]>(
+                `${API_URL}/products?populate=images,categories&pagination[limit]=100&sort=id:desc`,
+            );
+            return data?.[0] ? mapStrapiProduct(data[0]) : null;
+          }
+          
+          // Produtos de uma categoria
+          export async function getCollectionProducts(slug: string): Promise<Product[]> {
+            const categories = await safeFetch<StrapiCategory[]>(
+                `${API_URL}/products?filters[slug][$eq]=${slug}&populate=images,categories&pagination[limit]=1`,  );
+            const categoryId = categories?.[0]?.id;
+            if (!categoryId) return [];
+          
+            const products = await safeFetch<StrapiProduct[]>(
+              `${API_URL}/products?categories.id=${categoryId}&_limit=100&_sort=id:desc&_populate=images,categories`,
+            );
+            return products?.map(mapStrapiProduct) || [];
+          }
+          
+          // Página CMS por slug
+          export async function getPage(slug: string): Promise<StrapiPage | null> {
+            const data = await safeFetch<StrapiPage[]>(
+              `${API_URL}/pages?slug=${slug}&_limit=1`,
+            );
+            return data?.[0] || null;
+          }
+          
+          // Todas as páginas para sitemap
+          export async function getPages(): Promise<
+            { slug: string; updatedAt: string }[]
+          > {
+            const data = await safeFetch<StrapiPage[]>(
+              `${API_URL}/pages?_limit=100&_sort=id:desc`,
+            );
+            return (
+              data?.map((pg) => ({
+                slug: pg.slug,
+                updatedAt: pg.updatedAt,
+              })) || []
+            );
+          }
+          
+          // Produtos com busca + ordenação
+          export async function getProducts({
+            query,
+            sortKey = "createdAt",
+            reverse = false,
+          }: {
+            query?: string;
+            sortKey?: string;
+            reverse?: boolean;
+          }): Promise<Product[]> {
+              const params = new URLSearchParams();
+              if (query) params.set("filters[name][$containsi]", query);
+              params.set("sort", `${sortKey}:${reverse ? "desc" : "asc"}`);
+              params.set("pagination[limit]", "100");
+              params.set("populate", "images,categories");
+          
+              const url = `${API_URL}/products?${params.toString()}`;
+            const data = await safeFetch<StrapiProduct[]>(url);
+            return data?.map(mapStrapiProduct) || [];
+          }
+      |-- asaas.ts
+        Content:
+          import { createAsaasClient } from "asaas-node-sdk";
+          
+          if (!process.env.ASAAS_API_KEY || !process.env.ASAAS_ENVIRONMENT) {
+            throw new Error("Variáveis ASAAS não configuradas");
+          }
+          
+          const asaas = createAsaasClient({
+            apiKey: process.env.ASAAS_API_KEY,
+            environment: process.env.ASAAS_ENVIRONMENT as "sandbox" | "production",
+          });
+          
+          type BillingType = "BOLETO" | "CREDIT_CARD" | "PIX" | "UNDEFINED";
+          
+          interface AsaasPaymentResponse {
+            invoiceUrl?: string;
+            bankSlipUrl?: string;
+          }
+          
+          // Interface corrigida para usar Date
+          interface PaymentBody {
+            customer: string;
+            value: number;
+            dueDate: Date; // Tipo corrigido para Date
+            billingType: BillingType;
+          }
+          
+          export async function createAsaasPayment(
+            customerId: string,
+            value: number,
+            dueDate: Date,
+            billingType: BillingType = "BOLETO",
+          ): Promise<string> {
+            try {
+              const body: PaymentBody = {
+                customer: customerId,
+                value,
+                dueDate, // Passamos o objeto Date diretamente
+                billingType,
+              };
+          
+              const payment = await asaas.createNewPayment({ body });
+              if (!payment.data) throw new Error("Resposta do Asaas sem dados");
+          
+              const data = payment.data as AsaasPaymentResponse;
+              return data.invoiceUrl || data.bankSlipUrl || "";
+            } catch (error) {
+              console.error("Asaas payment error:", error);
+              throw new Error("Falha ao criar pagamento Asaas");
+            }
+          }
+      |-- constants.tsx
+        Content:
+          export type SortFilterItem = {
+            title: string;
+            slug: string;
+            sortKey: string;
+            reverse: boolean;
+          };
+          
+          export const sorting: SortFilterItem[] = [
+            { title: "Mais Relevantes", slug: "", sortKey: "relevance", reverse: false },
+            {
+              title: "Mais Novos",
+              slug: "date-new",
+              sortKey: "createdAt",
+              reverse: true,
+            },
+            { title: "Maior Preço", slug: "price-desc", sortKey: "price", reverse: true },
+            { title: "Menor Preço", slug: "price-asc", sortKey: "price", reverse: false },
+          ];
+          
+          export const defaultSort = sorting[0];
+      |-- utils.ts
+        Content:
+          import { ReadonlyURLSearchParams } from 'next/navigation';
+          
+          export const baseUrl = process.env.VERCEL_PROJECT_PRODUCTION_URL
+            ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+            : 'http://localhost:3000';
+          
+          export const createUrl = (
+            pathname: string,
+            params: URLSearchParams | ReadonlyURLSearchParams
+          ) => {
+            const paramsString = params.toString();
+            const queryString = `${paramsString.length ? '?' : ''}${paramsString}`;
+          
+            return `${pathname}${queryString}`;
+          };
+          
+          export const ensureStartsWith = (stringToCheck: string, startsWith: string) =>
+            stringToCheck.startsWith(startsWith)
+              ? stringToCheck
+              : `${startsWith}${stringToCheck}`;
+          
+          export const validateEnvironmentVariables = () => {
+            const requiredEnvironmentVariables = [
+              'SHOPIFY_STORE_DOMAIN',
+              'SHOPIFY_STOREFRONT_ACCESS_TOKEN'
+            ];
+            const missingEnvironmentVariables = [] as string[];
+          
+            requiredEnvironmentVariables.forEach((envVar) => {
+              if (!process.env[envVar]) {
+                missingEnvironmentVariables.push(envVar);
+              }
+            });
+          
+            if (missingEnvironmentVariables.length) {
+              throw new Error(
+                `The following environment variables are missing. Your site will not work without them. Read more: https://vercel.com/docs/integrations/shopify#configure-environment-variables\n\n${missingEnvironmentVariables.join(
+                  '\n'
+                )}\n`
+              );
+            }
+          
+            if (
+              process.env.SHOPIFY_STORE_DOMAIN?.includes('[') ||
+              process.env.SHOPIFY_STORE_DOMAIN?.includes(']')
+            ) {
+              throw new Error(
+                'Your `SHOPIFY_STORE_DOMAIN` environment variable includes brackets (ie. `[` and / or `]`). Your site will not work with them there. Please remove them.'
+              );
+            }
+          };
+    |-- opengraph-image.tsx
+      Content:
+        import OpengraphImage from "@/app/components/opengraph-image";
+        import { fetchCategories } from "@/app/lib/api";
+        
+        export default async function Image() {
+          const categories = await fetchCategories();
+          // Escolha a categoria desejada, ou use o campo apropriado
+          const title = categories[0]?.name || "Título padrão";
+          return await OpengraphImage({ title });
+        }
+    |-- page.tsx
+      Content:
+        import { Carousel } from "@/app/components/carousel";
+        import { ThreeItemGrid } from "@/app/components/grid/three-items";
+        import Footer from "@/app/components/layout/footer";
+        
+        export const metadata = {
+          description:
+            "High-performance ecommerce store built with Next.js, Vercel, and Shopify.",
+          openGraph: {
+            type: "website",
+          },
+        };
+        
+        export default function HomePage() {
+          return (
+            <>
+              <ThreeItemGrid />
+              <Carousel />
+              <Footer />
+            </>
+          );
+        }
+    |-- product/
+      |-- [handle]/
+      |-- [slug]/
+        |-- page.tsx
+          Content:
+            "use client";
+            
+            import { useState, useEffect } from "react";
+            import { useParams } from "next/navigation";
+            import { fetchProductBySlug } from "../../lib/api";
+            import { Product } from "../../types";
+            import Image from "next/image";
+            import { Button } from "../../components/ui/button";
+            
+            // ✅ Tipo CartItemType definido localmente
+            type CartItemType = {
+              product: {
+                id: number;
+                title: string;
+                price: number;
+                image: { url: string };
+                slug: string;
+                description: string;
+                stock: number;
+                categories: { id: number; name: string; slug: string }[];
+              };
+              quantity: number;
+            };
+            
+            export default function ProductPage() {
+              const params = useParams();
+              const slug = Array.isArray(params.slug) ? params.slug[0] : params.slug;
+            
+              const [product, setProduct] = useState<Product | null>(null);
+              const [qty, setQty] = useState(1);
+              const [loading, setLoading] = useState(true);
+              const [error, setError] = useState("");
+            
+              useEffect(() => {
+                async function loadProduct() {
+                  try {
+                    if (typeof slug !== "string") {
+                      throw new Error("Slug inválido");
+                    }
+                    const productData = await fetchProductBySlug(slug);
+                    setProduct(productData);
+                  } catch (err) {
+                    console.error("Failed to load product:", err);
+                    setError(err instanceof Error ? err.message : "Erro desconhecido");
+                  } finally {
+                    setLoading(false);
+                  }
+                }
+            
+                if (slug) loadProduct();
+              }, [slug]);
+            
+              const handleAddToCart = () => {
+                if (!product) return;
+            
+                const cartItems: CartItemType[] = JSON.parse(
+                  localStorage.getItem("cart") || "[]",
+                );
+                const existingItemIndex = cartItems.findIndex(
+                  (item) => item.product.id === product.id,
+                );
+            
+                if (existingItemIndex >= 0) {
+                  cartItems[existingItemIndex].quantity += qty;
+                } else {
+                  cartItems.push({
+                    product: {
+                      id: product.id,
+                      title: product.title,
+                      price: product.price,
+                      image: product.image,
+                      slug: product.slug,
+                      description: product.description,
+                      stock: product.stock,
+                      categories: product.categories,
+                    },
+                    quantity: qty,
+                  });
+                }
+            
+                localStorage.setItem("cart", JSON.stringify(cartItems));
+                alert(`${qty} × ${product.title} adicionado ao carrinho`);
+                setQty(1);
+              };
+            
+              if (loading) return <div className="text-center py-8">Carregando...</div>;
+              if (error)
+                return <div className="text-center py-8 text-red-500">{error}</div>;
+              if (!product)
+                return <div className="text-center py-8">Produto não encontrado</div>;
+            
+              return (
+                <div className="container mx-auto py-8 px-4">
+                  <div className="flex flex-col md:flex-row gap-8">
+                    <div className="md:w-1/2 flex justify-center">
+                      {product.image?.url ? (
+                        <Image
+                          src={product.image.url}
+                          alt={product.title}
+                          width={500}
+                          height={500}
+                          className="rounded-lg object-cover"
+                        />
+                      ) : (
+                        <div className="bg-gray-200 border-2 border-dashed rounded-xl w-full h-96 flex items-center justify-center">
+                          <span className="text-gray-500">Imagem não disponível</span>
+                        </div>
+                      )}
+                    </div>
+            
+                    <div className="md:w-1/2">
+                      <h1 className="text-3xl font-bold mb-4">{product.title}</h1>
+                      <p className="text-gray-700 mb-6">{product.description}</p>
+            
+                      <div className="mb-6">
+                        <span className="text-2xl font-bold text-primary">
+                          R$ {product.price.toFixed(2)}
+                        </span>
+                        {product.stock > 0 ? (
+                          <span className="ml-4 text-green-600">Em estoque</span>
+                        ) : (
+                          <span className="ml-4 text-red-600">Esgotado</span>
+                        )}
+                      </div>
+            
+                      <div className="flex items-center gap-4 mb-8">
+                        <input
+                          type="number"
+                          min={1}
+                          max={product.stock}
+                          value={qty}
+                          onChange={(e) => setQty(Math.max(1, Number(e.target.value)))}
+                          className="w-20 px-3 py-2 border rounded text-center"
+                        />
+                        <Button
+                          onClick={handleAddToCart}
+                          className="px-6 py-3"
+                          disabled={product.stock <= 0}
+                        >
+                          Adicionar ao Carrinho
+                        </Button>
+                      </div>
+            
+                      {product.categories && product.categories.length > 0 && (
+                        <div className="mb-6">
+                          <h2 className="text-lg font-semibold mb-2">Categorias</h2>
+                          <div className="flex flex-wrap gap-2">
+                            {product.categories.map((category) => (
+                              <span
+                                key={category.id}
+                                className="bg-gray-100 px-3 py-1 rounded-full text-sm"
+                              >
+                                {category.name}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              );
+            }
+    |-- robots.ts
+      Content:
+        import { baseUrl } from "@/app/lib/utils";
+        
+        export default function robots() {
+          return {
+            rules: [
+              {
+                userAgent: "*",
+              },
+            ],
+            sitemap: `${baseUrl}/sitemap.xml`,
+            host: baseUrl,
+          };
+        }
+    |-- search/
+      |-- [collection]/
+        |-- opengraph-image.tsx
+          Content:
+            import OpengraphImage from "@/app/components/opengraph-image";
+            import { fetchCategories } from "@/app/lib/api";
+            
+            export default async function Image({
+              params,
+            }: {
+              params: { collection: string };
+            }) {
+              // Busca todas as categorias e encontra a que tem o slug correto
+              const categories = await fetchCategories();
+              const collection = categories.find((cat) => cat.slug === params.collection);
+              const title = collection?.name || "Coleção não encontrada";
+              return await OpengraphImage({ title });
+            }
+        |-- page.tsx
+          Content:
+            import Grid from "@/app/components/grid";
+            import ProductGridItems from "@/app/components/layout/product-grid-items";
+            import { defaultSort, sorting } from "@/app/lib/constants";
+            import { getProducts } from "@/app/lib/api";
+            import type { Metadata } from "next";
+            import { notFound } from "next/navigation";
+            
+            type Props = {
+              params: Promise<{ collection: string }>;
+              searchParams?: Promise<{ q?: string; sort?: string }>;
+            };
+            
+            // ✅ SEO dinâmico com `collection`
+            export async function generateMetadata({ params }: Props): Promise<Metadata> {
+              const { collection } = await params;
+            
+              return {
+                title: `Search results for ${collection}`,
+                description: `Browse products in the ${collection} collection.`,
+              };
+            }
+            
+            // ✅ `params` removido completamente pois não é usado dentro
+            export default async function SearchPage({
+              searchParams,
+            }: Omit<Props, "params">) {
+              const sp = searchParams ? await searchParams : {};
+              const { q: searchValue, sort } = sp;
+              const sortItem = sorting.find((s) => s.slug === sort) || defaultSort;
+            
+              const products = await getProducts({
+                query: searchValue,
+                sortKey: sortItem.sortKey,
+                reverse: sortItem.reverse,
+              });
+            
+              if (!products) notFound();
+            
+              const resultsText = products.length === 1 ? "result" : "results";
+            
+              return (
+                <>
+                  {searchValue && (
+                    <p className="mb-4">
+                      {products.length === 0
+                        ? "There are no products that match "
+                        : `Showing ${products.length} ${resultsText} for `}
+                      <span className="font-bold">&quot;{searchValue}&quot;</span>
+                    </p>
+                  )}
+                  {products.length > 0 && (
+                    <Grid className="grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+                      <ProductGridItems products={products} />
+                    </Grid>
+                  )}
+                </>
+              );
+            }
+      |-- children-wrapper.tsx
+        Content:
+          'use client';
+          
+          import { useSearchParams } from 'next/navigation';
+          import { Fragment } from 'react';
+          
+          // Ensure children are re-rendered when the search query changes
+          export default function ChildrenWrapper({ children }: { children: React.ReactNode }) {
+            const searchParams = useSearchParams();
+            return <Fragment key={searchParams.get('q')}>{children}</Fragment>;
+          }
+      |-- loading.tsx
+        Content:
+          import Grid from "@/app/components/grid";
+          
+          export default function Loading() {
+            return (
+              <>
+                <div className="mb-4 h-6" />
+                <Grid className="grid-cols-2 lg:grid-cols-3">
+                  {Array(12)
+                    .fill(0)
+                    .map((_, index) => {
+                      return (
+                        <Grid.Item
+                          key={index}
+                          className="animate-pulse bg-neutral-100 dark:bg-neutral-800"
+                        />
+                      );
+                    })}
+                </Grid>
+              </>
+            );
+          }
+      |-- page.tsx
+        Content:
+          import Grid from "@/app/components/grid";
+          import { ProductGrid } from "@/app/components/product/ProductGrid";
+          import { getProducts } from "@/app/lib/api";
+          import { defaultSort, sorting } from "@/app/lib/constants";
+          import type { Metadata } from "next";
+          import { notFound } from "next/navigation";
+          
+          type Props = {
+            searchParams?: Promise<{ q?: string; sort?: string }>;
+          };
+          
+          export const metadata: Metadata = {
+            title: "Search",
+            description: "Search for products in the store.",
+          };
+          
+          export default async function SearchPage({ searchParams }: Props) {
+            const sp = searchParams ? await searchParams : {};
+            const { q: searchValue, sort } = sp;
+          
+            const sortItem = sorting.find((s) => s.slug === sort) || defaultSort;
+          
+            const products = await getProducts({
+              query: searchValue,
+              sortKey: sortItem.sortKey,
+              reverse: sortItem.reverse,
+            });
+          
+            if (!products) notFound();
+          
+            const resultsText = products.length !== 1 ? "results" : "result";
+          
+            return (
+              <>
+                {searchValue && (
+                  <p className="mb-4">
+                    {products.length === 0
+                      ? "There are no products that match "
+                      : `Showing ${products.length} ${resultsText} for `}
+                    <span className="font-bold">&quot;{searchValue}&quot;</span>
+                  </p>
+                )}
+                {products.length > 0 && (
+                  <Grid className="grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+                    <ProductGrid products={products} />
+                  </Grid>
+                )}
+              </>
+            );
+          }
+    |-- sitemap.ts
+      Content:
+        import { MetadataRoute } from "next";
+        import { getCollections, getPages, getProducts } from "@/app/lib/api";
+        import { baseUrl } from "@/app/lib/utils";
+        import type { Product } from "@/app/types";
+        
+        // Corrigimos aqui o tipo da coleção, que tem 'title' no getCollections
+        interface CollectionEntry {
+          id: number;
+          title: string;
+          slug: string;
+          updatedAt?: string;
+        }
+        
+        interface Page {
+          slug: string;
+          updatedAt: string;
+        }
+        
+        export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+          const home: MetadataRoute.Sitemap[0] = {
+            url: `${baseUrl}/`,
+            lastModified: new Date().toISOString(),
+          };
+        
+          const [collections, products, pages] = await Promise.all([
+            getCollections(), // Retorna CollectionEntry[]
+            getProducts({}), // Retorna Product[]
+            getPages(), // Retorna Page[]
+          ]);
+        
+          const collectionRoutes = collections.map((col: CollectionEntry) => ({
+            url: `${baseUrl}/search/${col.slug}`,
+            lastModified: col.updatedAt ?? new Date().toISOString(),
+          }));
+        
+          const productRoutes = products.map((prod: Product) => ({
+            url: `${baseUrl}/product/${prod.slug}`,
+            lastModified: prod.updatedAt ?? new Date().toISOString(),
+          }));
+        
+          const pageRoutes = pages.map((pg: Page) => ({
+            url: `${baseUrl}/${pg.slug}`,
+            lastModified: pg.updatedAt ?? new Date().toISOString(),
+          }));
+        
+          return [home, ...collectionRoutes, ...productRoutes, ...pageRoutes];
+        }
+    |-- styles/
+    |-- types/
+      |-- index.ts
+        Content:
+          export interface Category {
+            id: number;
+            name: string;
+            slug: string;
+          }
+          
+          export interface ProductImage {
+            url: string;
+          }
+          
+          export interface Product {
+            id: number;
+            title: string;
+            description: string;
+            price: number;
+            slug: string;
+            image: ProductImage;
+            stock: number;
+            categories: Category[];
+            updatedAt?: string; // ✅ adicionado para uso no sitemap
+          }
+|-- tsconfig.json
+  Content:
+    {
+      "compilerOptions": {
+        "target": "ES2017",
+        "lib": ["dom", "dom.iterable", "esnext"],
+        "allowJs": true,
+        "skipLibCheck": true,
+        "strict": true,
+        "noEmit": true,
+        "esModuleInterop": true,
+        "module": "esnext",
+        "moduleResolution": "bundler",
+        "resolveJsonModule": true,
+        "isolatedModules": true,
+        "jsx": "preserve",
+        "incremental": true,
+        "plugins": [{"name": "next"}],
+        "paths": {"@/*": ["./src/*"]},
+        "typeRoots": ["./node_modules/@types", "./src/types"]
+      },
+      "include": [
+        "next-env.d.ts",
+        "**/*.ts",
+        "**/*.tsx",
+        ".next/types/**/*.ts",
+        "eslint.config.mjs",
+        "src/types/**/*.d.ts"
+      ],
+      "exclude": ["node_modules"]
+    }

@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { getCollectionProducts } from "@/app/lib/api";
 import { GridTileImage } from "./grid/tile";
 

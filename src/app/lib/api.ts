@@ -1,7 +1,6 @@
 import { Product, Category } from "../types";
 
-const API_URL =
-  process.env.NEXT_PUBLIC_STRAPI_URL || "https://strapi.lacrosstech.com.br";
+const API_URL = (process.env.NEXT_PUBLIC_STRAPI_URL || "https://seu-strapi") + "/api";
 
 /* ------------------------- HANDLERS UTIL ------------------------- */
 
@@ -118,7 +117,7 @@ export async function fetchProductBySlug(
   slug: string,
 ): Promise<Product | null> {
   const data = await safeFetch<StrapiProduct[]>(
-    `${API_URL}/products?slug=${slug}&_limit=1&_populate=images,categories`,
+      `${API_URL}/products?populate=images,categories&pagination[limit]=100&sort=id:desc`,
   );
   return data?.[0] ? mapStrapiProduct(data[0]) : null;
 }
@@ -126,8 +125,7 @@ export async function fetchProductBySlug(
 // Produtos de uma categoria
 export async function getCollectionProducts(slug: string): Promise<Product[]> {
   const categories = await safeFetch<StrapiCategory[]>(
-    `${API_URL}/categories?slug=${slug}&_limit=1`,
-  );
+      `${API_URL}/products?filters[slug][$eq]=${slug}&populate=images,categories&pagination[limit]=1`,  );
   const categoryId = categories?.[0]?.id;
   if (!categoryId) return [];
 
@@ -170,13 +168,13 @@ export async function getProducts({
   sortKey?: string;
   reverse?: boolean;
 }): Promise<Product[]> {
-  const params = new URLSearchParams();
-  if (query) params.set("q", query);
-  params.set("_sort", `${sortKey}:${reverse ? "desc" : "asc"}`);
-  params.set("_limit", "100");
-  params.set("_populate", "images,categories");
+    const params = new URLSearchParams();
+    if (query) params.set("filters[name][$containsi]", query);
+    params.set("sort", `${sortKey}:${reverse ? "desc" : "asc"}`);
+    params.set("pagination[limit]", "100");
+    params.set("populate", "images,categories");
 
-  const url = `${API_URL}/products?${params.toString()}`;
+    const url = `${API_URL}/products?${params.toString()}`;
   const data = await safeFetch<StrapiProduct[]>(url);
   return data?.map(mapStrapiProduct) || [];
 }
