@@ -1,0 +1,74 @@
+{
+  "kind": "collectionType",
+  "collectionName": "payments",
+  "info": {
+    "singularName": "payment",
+    "pluralName": "payments",
+    "displayName": "Payment",
+    "description": "Pagamentos dos pedidos"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "amount": {
+      "type": "decimal",
+      "required": true
+    },
+    "currency": {
+      "type": "string",
+      "default": "BRL"
+    },
+    "method": {
+      "type": "enumeration",
+      "enum": ["credit_card", "debit_card", "boleto", "pix", "wallet", "bank_transfer"],
+      "required": true
+    },
+    "status": {
+      "type": "enumeration",
+      "enum": ["pending", "processing", "paid", "failed", "refunded", "cancelled"],
+      "default": "pending",
+      "required": true
+    },
+    "gateway": {
+      "type": "enumeration",
+      "enum": ["asaas", "mercadopago", "stripe", "paypal"],
+      "required": true
+    },
+    "gatewayId": {
+      "type": "string"
+    },
+    "gatewayResponse": {
+      "type": "json"
+    },
+    "installments": {
+      "type": "integer",
+      "default": 1
+    },
+    "dueDate": {
+      "type": "date"
+    },
+    "paidAt": {
+      "type": "datetime"
+    },
+    "refundedAt": {
+      "type": "datetime"
+    },
+    "notes": {
+      "type": "text"
+    },
+    "order": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::order.order",
+      "inversedBy": "payment"
+    },
+    "store": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::store.store",
+      "inversedBy": "payments"
+    }
+  }
+}

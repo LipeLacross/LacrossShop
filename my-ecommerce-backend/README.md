@@ -1,61 +1,213 @@
-# 🚀 Getting started with Strapi
+# 🚀 NeoMercado Backend (Strapi v5)
 
-Strapi comes with a full featured [Command Line Interface](https://docs.strapi.io/dev-docs/cli) (CLI) which lets you scaffold and manage your project in seconds.
+Backend completo para o sistema de e-commerce NeoMercado, construído com Strapi v5.
 
-### `develop`
+## ✨ Funcionalidades Implementadas
 
-Start your Strapi application with autoReload enabled. [Learn more](https://docs.strapi.io/dev-docs/cli#strapi-develop)
+- ✅ **Content Types Completos**
+  - Store (Lojas)
+  - Category (Categorias)
+  - Product (Produtos)
+  - Customer (Clientes)
+  - Order (Pedidos)
+  - Payment (Pagamentos)
+  - Order Item (Itens de Pedido)
+  - Page (Páginas CMS)
 
+- ✅ **Componentes Reutilizáveis**
+  - Address (Endereço)
+  - SEO
+  - Dimensions (Dimensões)
+  - Product Variant (Variantes de Produto)
+
+- ✅ **Relacionamentos Configurados**
+  - Loja ↔ Produtos, Categorias, Clientes, Pedidos
+  - Categorias ↔ Produtos
+  - Produtos ↔ Itens de Pedido
+  - Pedidos ↔ Clientes, Pagamentos, Itens
+
+- ✅ **Sistema de Pagamentos**
+  - Múltiplos gateways (Asaas, Mercado Pago, Stripe)
+  - Múltiplos métodos (Cartão, Boleto, PIX)
+  - Sistema de parcelas
+
+## 🛠️ Instalação
+
+### 1. Dependências
+```bash
+npm install
 ```
-npm run develop
-# or
-yarn develop
+
+### 2. Configuração de Ambiente
+Crie um arquivo `.env` na raiz do projeto:
+
+```env
+HOST=0.0.0.0
+PORT=1337
+APP_KEYS=S0KIbk4knQP+HdpI+iRt2Q==,0ykzMons30AVDFGtNZhenQ==,Y6rzrZZOuBIe6waHnaUiuw==,7lWtjTKdwU4h737ZdflKBw==
+API_TOKEN_SALT=HcMrOUhbKxgFA/iIq0qrlw==
+ADMIN_JWT_SECRET=lM1n17DhTEvEKKbhtlmFBg==
+TRANSFER_TOKEN_SALT=FDNl5EdGyyZN/a3W/yBLRg==
+ENCRYPTION_KEY=q+jjyWP09luj13qJ0AcBrA==
+DATABASE_CLIENT=sqlite
+DATABASE_FILENAME=.tmp/data.db
+DATABASE_SSL=false
+
+# Opcional: Configurações de pagamento
+ASAAS_API_KEY=sua_chave_aqui
+ASAAS_ENVIRONMENT=sandbox
 ```
 
-### `start`
-
-Start your Strapi application with autoReload disabled. [Learn more](https://docs.strapi.io/dev-docs/cli#strapi-start)
-
-```
-npm run start
-# or
-yarn start
+### 3. Iniciar o Servidor
+```bash
+npm run dev
 ```
 
-### `build`
+O Strapi estará disponível em: http://localhost:1337
 
-Build your admin panel. [Learn more](https://docs.strapi.io/dev-docs/cli#strapi-build)
+## 🗄️ Populando o Banco de Dados
 
+### Executar o Seed
+```bash
+npm run seed
 ```
+
+Este comando criará:
+- 1 loja de exemplo
+- 4 categorias (Eletrônicos, Roupas, Casa e Jardim, Esportes)
+- 6 produtos de exemplo
+- 2 páginas CMS
+
+### Acessar o Admin
+1. Acesse: http://localhost:1337/admin
+2. Crie sua conta de administrador
+3. Configure as permissões públicas para as APIs
+
+## 🔐 Configuração de Permissões
+
+### APIs Públicas (Leitura)
+- `GET /api/stores` - Listar lojas
+- `GET /api/categories` - Listar categorias
+- `GET /api/products` - Listar produtos
+- `GET /api/pages` - Listar páginas
+
+### APIs Públicas (Criação)
+- `POST /api/customers` - Criar cliente
+- `POST /api/orders` - Criar pedido
+- `POST /api/payments` - Criar pagamento
+- `POST /api/order-items` - Criar item de pedido
+
+## 📱 Endpoints Principais
+
+### Produtos
+```
+GET /api/products?populate=images,categories
+GET /api/products?filters[slug][$eq]=nome-do-produto&populate=images,categories
+GET /api/products?filters[categories][id][$eq]=1&populate=images,categories
+```
+
+### Categorias
+```
+GET /api/categories?populate=products
+GET /api/categories?filters[slug][$eq]=nome-da-categoria
+```
+
+### Busca
+```
+GET /api/products?filters[name][$containsi]=termo&populate=images,categories
+```
+
+## 🔧 Desenvolvimento
+
+### Estrutura de Arquivos
+```
+src/
+├── api/                    # Content Types
+│   ├── store/
+│   ├── category/
+│   ├── product/
+│   ├── customer/
+│   ├── order/
+│   ├── payment/
+│   ├── order-item/
+│   └── page/
+├── components/             # Componentes reutilizáveis
+│   ├── shared/
+│   └── product/
+└── config/                 # Configurações
+    ├── database.ts
+    ├── server.ts
+    ├── middlewares.ts
+    └── policies.ts
+```
+
+### Comandos Úteis
+```bash
+# Desenvolvimento
+npm run dev
+
+# Build para produção
 npm run build
-# or
-yarn build
+
+# Iniciar em produção
+npm run start
+
+# Console interativo
+npm run console
+
+# Seed do banco
+npm run seed
 ```
 
-## ⚙️ Deployment
+## 🚀 Deploy
 
-Strapi gives you many possible deployment options for your project including [Strapi Cloud](https://cloud.strapi.io). Browse the [deployment section of the documentation](https://docs.strapi.io/dev-docs/deployment) to find the best solution for your use case.
-
+### Build
+```bash
+npm run build
 ```
-yarn strapi deploy
+
+### Produção
+```bash
+npm run start
 ```
 
-## 📚 Learn more
+### Variáveis de Ambiente para Produção
+```env
+NODE_ENV=production
+DATABASE_CLIENT=postgres
+DATABASE_URL=sua_url_do_postgres
+JWT_SECRET=chave_jwt_producao
+```
 
-- [Resource center](https://strapi.io/resource-center) - Strapi resource center.
-- [Strapi documentation](https://docs.strapi.io) - Official Strapi documentation.
-- [Strapi tutorials](https://strapi.io/tutorials) - List of tutorials made by the core team and the community.
-- [Strapi blog](https://strapi.io/blog) - Official Strapi blog containing articles made by the Strapi team and the community.
-- [Changelog](https://strapi.io/changelog) - Find out about the Strapi product updates, new features and general improvements.
+## 📊 Monitoramento
 
-Feel free to check out the [Strapi GitHub repository](https://github.com/strapi/strapi). Your feedback and contributions are welcome!
+### Logs
+Os logs são exibidos no console durante o desenvolvimento.
 
-## ✨ Community
+### Health Check
+```
+GET /_health
+```
 
-- [Discord](https://discord.strapi.io) - Come chat with the Strapi community including the core team.
-- [Forum](https://forum.strapi.io/) - Place to discuss, ask questions and find answers, show your Strapi project and get feedback or just talk with other Community members.
-- [Awesome Strapi](https://github.com/strapi/awesome-strapi) - A curated list of awesome things related to Strapi.
+## 🤝 Contribuição
+
+1. Faça um fork do projeto
+2. Crie uma branch para sua feature
+3. Commit suas mudanças
+4. Push para a branch
+5. Abra um Pull Request
+
+## 📄 Licença
+
+Este projeto está sob a licença MIT.
+
+## 🆘 Suporte
+
+Para dúvidas ou problemas:
+1. Verifique a documentação do Strapi
+2. Abra uma issue no repositório
+3. Consulte os logs do servidor
 
 ---
 
-<sub>🤫 Psst! [Strapi is hiring](https://strapi.io/careers).</sub>
+**NeoMercado** - E-commerce moderno e escalável 🛍️
