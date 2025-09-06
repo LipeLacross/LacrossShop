@@ -1,7 +1,9 @@
 import { Product, Category } from "../types";
 
-const API_URL =
-  (process.env.NEXT_PUBLIC_STRAPI_URL || "https://seu-strapi") + "/api";
+const RAW_BASE = (
+  process.env.NEXT_PUBLIC_STRAPI_URL || "http://localhost:1337"
+).replace(/\/+$/, "");
+const API_URL = RAW_BASE + "/api";
 
 /* ------------------------- HANDLERS UTIL ------------------------- */
 
@@ -97,16 +99,15 @@ function mapStrapiProduct(p: StrapiProduct): Product {
       name: cat.attributes.name,
       slug: cat.attributes.slug,
     })) || [];
-
   return {
     id: p.id,
     title: attrs.name,
     description: attrs.description,
-    price: attrs.price,
+    price: Number(attrs.price), // garante número mesmo se vier string (decimal)
     slug: attrs.slug,
     image: { url: imageUrl },
     stock: attrs.stock,
-    categories: categories,
+    categories,
   };
 }
 

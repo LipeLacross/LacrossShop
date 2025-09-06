@@ -14,7 +14,17 @@ export default [
       },
     },
   },
-  "strapi::cors",
+  {
+    name: "strapi::cors",
+    config: {
+      origin: (process.env.CORS_ORIGINS || "http://localhost:3000")
+        .split(",")
+        .map((o) => o.trim()),
+      methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+      headers: "*",
+      keepHeaderOnError: true,
+    },
+  },
   "strapi::poweredBy",
   "strapi::logger",
   "strapi::query",
