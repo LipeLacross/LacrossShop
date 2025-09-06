@@ -4,7 +4,7 @@ import Footer from "@/app/components/layout/footer";
 
 export const metadata = {
   description:
-    "High-performance ecommerce store built with Next.js, Vercel, and Shopify.",
+    "NeoMercado — loja virtual moderna, rápida e escalável.",
   openGraph: {
     type: "website",
   },

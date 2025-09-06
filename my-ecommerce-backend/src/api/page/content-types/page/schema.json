@@ -1,42 +1,14 @@
 {
   "kind": "collectionType",
   "collectionName": "pages",
-  "info": {
-    "singularName": "page",
-    "pluralName": "pages",
-    "displayName": "Page",
-    "description": "Páginas do CMS"
-  },
-  "options": {
-    "draftAndPublish": true
-  },
-  "pluginOptions": {},
+  "info": { "singularName": "page", "pluralName": "pages", "displayName": "Page" },
+  "options": { "draftAndPublish": true },
   "attributes": {
-    "title": {
-      "type": "string",
-      "required": true
-    },
-    "slug": {
-      "type": "uid",
-      "targetField": "title",
-      "required": true,
-      "unique": true
-    },
-    "body": {
-      "type": "richtext"
-    },
-    "bodySummary": {
-      "type": "text"
-    },
-    "featured": {
-      "type": "boolean",
-      "default": false
-    },
-    "seo": {
-      "type": "component",
-      "component": "shared.seo",
-      "repeatable": false
-    },
+    "title": { "type": "string", "required": true },
+    "slug": { "type": "uid", "targetField": "title", "required": true, "unique": true },
+    "bodySummary": { "type": "string" },
+    "body": { "type": "richtext" },
+    "featured": { "type": "boolean", "default": false },
     "store": {
       "type": "relation",
       "relation": "manyToOne",

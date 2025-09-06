@@ -10,8 +10,8 @@ type Props = {
 };
 
 export const metadata: Metadata = {
-  title: "Search",
-  description: "Search for products in the store.",
+  title: "Busca",
+  description: "Busque por produtos na NeoMercado.",
 };
 
 export default async function SearchPage({ searchParams }: Props) {
@@ -28,15 +28,15 @@ export default async function SearchPage({ searchParams }: Props) {
 
   if (!products) notFound();
 
-  const resultsText = products.length !== 1 ? "results" : "result";
+  const resultsText = products.length !== 1 ? "resultados" : "resultado";
 
   return (
     <>
       {searchValue && (
         <p className="mb-4">
           {products.length === 0
-            ? "There are no products that match "
-            : `Showing ${products.length} ${resultsText} for `}
+            ? "Não há produtos que correspondam a "
+            : `Exibindo ${products.length} ${resultsText} para `}
           <span className="font-bold">&quot;{searchValue}&quot;</span>
         </p>
       )}

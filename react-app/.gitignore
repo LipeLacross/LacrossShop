@@ -1,0 +1,21 @@
+# Node
+node_modules/
+.npm/
+
+# Builds
+dist/
+*.log
+
+# Tests
+coverage/
+.vitest/
+
+# Editor
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Env
+.env*
+

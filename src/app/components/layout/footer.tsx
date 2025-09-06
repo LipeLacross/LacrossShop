@@ -27,7 +27,7 @@ export default async function Footer() {
     path: `/search/${cat.slug}`,
   }));
 
-  const copyrightName = COMPANY_NAME || SITE_NAME || "LacrossTech";
+  const copyrightName = COMPANY_NAME || SITE_NAME || "NeoMercado";
 
   return (
     <footer className="text-sm text-neutral-500 dark:text-neutral-400">
@@ -56,17 +56,7 @@ export default async function Footer() {
           <FooterMenu menu={menu} />
         </Suspense>
 
-        <div className="md:ml-auto">
-          <a
-            href="https://vercel.com/templates/next.js/nextjs-commerce"
-            arial-label="Deploy on Vercel"
-            className="flex h-8 w-max items-center justify-center rounded-md border border-neutral-200 bg-white text-xs text-black dark:border-neutral-700 dark:bg-black dark:text-white"
-          >
-            <span className="px-3">▲</span>
-            <hr className="h-full border-r border-neutral-200 dark:border-neutral-700" />
-            <span className="px-3">Deploy</span>
-          </a>
-        </div>
+        {/* Botão de deploy da Vercel removido para padronização de branding */}
       </div>
 
       <div className="border-t border-neutral-200 py-6 dark:border-neutral-700">
@@ -79,14 +69,7 @@ export default async function Footer() {
             All rights reserved.
           </p>
           <hr className="mx-4 hidden h-4 w-[1px] border-l border-neutral-400 md:inline-block" />
-          <p>
-            <a href="https://github.com/vercel/commerce">View the source</a>
-          </p>
-          <p className="md:ml-auto">
-            <a href="https://vercel.com" className="text-black dark:text-white">
-              Created by ▲ Vercel
-            </a>
-          </p>
+          {/* Links externos padrão removidos */}
         </div>
       </div>
     </footer>

@@ -5,46 +5,17 @@
     "singularName": "category",
     "pluralName": "categories",
     "displayName": "Category",
-    "description": "Categorias de produtos"
+    "description": "Product categories"
   },
-  "options": {
-    "draftAndPublish": true
+  "pluginOptions": {
+    "content-api": { "visible": true }
   },
-  "pluginOptions": {},
+  "options": { "draftAndPublish": true },
   "attributes": {
-    "name": {
-      "type": "string",
-      "required": true
-    },
-    "slug": {
-      "type": "uid",
-      "targetField": "name",
-      "required": true
-    },
-    "description": {
-      "type": "text"
-    },
-    "featured": {
-      "type": "boolean",
-      "default": false
-    },
-    "image": {
-      "type": "media",
-      "multiple": false,
-      "allowedTypes": ["images"]
-    },
-    "parent": {
-      "type": "relation",
-      "relation": "manyToOne",
-      "target": "api::category.category",
-      "inversedBy": "children"
-    },
-    "children": {
-      "type": "relation",
-      "relation": "oneToMany",
-      "target": "api::category.category",
-      "mappedBy": "parent"
-    },
+    "name": { "type": "string", "required": true },
+    "slug": { "type": "uid", "targetField": "name", "required": true, "unique": true },
+    "description": { "type": "text" },
+    "featured": { "type": "boolean", "default": false },
     "store": {
       "type": "relation",
       "relation": "manyToOne",
@@ -55,7 +26,7 @@
       "type": "relation",
       "relation": "manyToMany",
       "target": "api::product.product",
-      "inversedBy": "categories"
+      "mappedBy": "categories"
     }
   }
 }

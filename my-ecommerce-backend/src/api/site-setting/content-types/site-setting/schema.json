@@ -1,0 +1,13 @@
+{
+  "kind": "singleType",
+  "collectionName": "site_settings",
+  "info": { "singularName": "site-setting", "pluralName": "site-settings", "displayName": "Site Settings" },
+  "options": { "draftAndPublish": false },
+  "attributes": {
+    "storeName": { "type": "string", "required": true },
+    "contactEmail": { "type": "email" },
+    "contactPhone": { "type": "string" },
+    "social": { "type": "json" },
+    "currency": { "type": "string", "default": "BRL" }
+  }
+}

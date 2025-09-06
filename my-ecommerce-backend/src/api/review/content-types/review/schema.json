@@ -1,0 +1,20 @@
+{
+  "kind": "collectionType",
+  "collectionName": "reviews",
+  "info": { "singularName": "review", "pluralName": "reviews", "displayName": "Review" },
+  "options": { "draftAndPublish": true },
+  "attributes": {
+    "rating": { "type": "integer", "required": true },
+    "comment": { "type": "text" },
+    "product": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::product.product"
+    },
+    "user": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user"
+    }
+  }
+}
