@@ -1,6 +1,6 @@
 import "./globals.css";
 import { ReactNode } from "react";
-import { GeistSans } from "geist/font/sans";
+import { GeistSans } from "geist/font/sans"; // Restored font
 import { baseUrl } from "@/app/lib/utils";
 import ClientLayout from "@/app/components/layout/ClientLayout";
 

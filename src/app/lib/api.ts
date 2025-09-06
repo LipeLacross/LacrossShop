@@ -8,6 +8,10 @@ const API_URL = RAW_BASE + "/api";
 /* ------------------------- HANDLERS UTIL ------------------------- */
 
 async function handle404(res: Response) {
+  if (res.status === 404) {
+    // Gracefully treat 404 as missing resource
+    return null as any;
+  }
   if (!res.ok)
     throw new Error(
       `API ${res.url} failed: ${res.status} - ${await res.text()}`,
@@ -26,6 +30,7 @@ async function safeFetch<T>(
     });
     return await handle404(response);
   } catch (error) {
+    // Only log unexpected errors (network / non-404)
     console.error(`❌ Falha ao buscar ${input.toString()}:`, error);
     return null;
   }
