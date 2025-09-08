@@ -8,7 +8,7 @@ import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import Search, { SearchSkeleton } from "./search";
 import type { Category } from "@/app/types";
 
-export default function MobileMenu({ menu }: { menu: Category[] }) {
+export default function MobileMenu({ menu = [] as Category[] }: { menu?: Category[] }) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const [isOpen, setIsOpen] = useState(false);
@@ -29,6 +29,8 @@ export default function MobileMenu({ menu }: { menu: Category[] }) {
   useEffect(() => {
     setIsOpen(false);
   }, [pathname, searchParams]);
+
+  const safeMenu = Array.isArray(menu) ? menu.filter(Boolean) : [];
 
   return (
     <>
@@ -78,9 +80,9 @@ export default function MobileMenu({ menu }: { menu: Category[] }) {
                   </Suspense>
                 </div>
 
-                {menu.length > 0 && (
+                {safeMenu.length > 0 && (
                   <ul className="flex w-full flex-col">
-                    {menu.map((item) => (
+                    {safeMenu.map((item) => (
                       <li
                         key={item.id}
                         className="py-2 text-xl text-black transition-colors hover:text-neutral-500 dark:text-white"

@@ -583,6 +583,11 @@ export interface ApiProductProduct extends Struct.CollectionTypeSchema {
   options: {
     draftAndPublish: true;
   };
+  pluginOptions: {
+    'content-api': {
+      visible: true;
+    };
+  };
   attributes: {
     active: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     brand: Schema.Attribute.Relation<'manyToOne', 'api::brand.brand'>;

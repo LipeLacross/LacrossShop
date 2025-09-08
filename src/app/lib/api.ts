@@ -9,8 +9,16 @@ const API_URL = RAW_BASE + "/api";
 
 async function handle404(res: Response) {
   if (res.status === 404) {
-    // Gracefully treat 404 as missing resource
-    return null as any;
+    return null as unknown as { data: unknown } | null;
+  }
+  if (res.status === 400) {
+    // Log detalhado do corpo para debug
+    try {
+      const clone = res.clone();
+      const txt = await clone.text();
+      console.warn("⚠️  400 Body:", res.url, txt);
+    } catch {}
+    return null as unknown as { data: unknown } | null;
   }
   if (!res.ok)
     throw new Error(
@@ -30,7 +38,6 @@ async function safeFetch<T>(
     });
     return await handle404(response);
   } catch (error) {
-    // Only log unexpected errors (network / non-404)
     console.error(`❌ Falha ao buscar ${input.toString()}:`, error);
     return null;
   }
@@ -49,15 +56,16 @@ interface StrapiCategory {
   };
 }
 
-interface StrapiFile {
-  data: {
-    id: number;
-    attributes: {
-      url: string;
-      name: string;
-      alternativeText?: string;
-    };
-  }[];
+interface StrapiFileItem {
+  id: number;
+  attributes: {
+    url: string;
+    name: string;
+    alternativeText?: string;
+  };
+}
+interface StrapiFileRelation {
+  data: StrapiFileItem[];
 }
 
 interface StrapiProduct {
@@ -72,47 +80,62 @@ interface StrapiProduct {
     featured: boolean;
     active: boolean;
     updatedAt?: string;
-    images: StrapiFile;
-    categories: {
-      data: StrapiCategory[];
-    };
+    images?: StrapiFileRelation;
+    categories: { data: StrapiCategory[] };
   };
 }
 
-interface StrapiPage {
-  id: number;
-  title: string;
-  slug: string;
-  body: string;
-  bodySummary: string;
-  createdAt: string;
-  updatedAt: string;
-  seo?: {
-    title?: string;
-    description?: string;
-  };
-}
+/* ------------------------ HELPERS QUERY -------------------------- */
+
+// Substitui populate específico por wildcard para evitar 400
+const PRODUCT_POPULATE = "populate=*";
 
 /* ------------------------ TRANSFORMADORES ------------------------ */
 
-function mapStrapiProduct(p: StrapiProduct): Product {
-  const attrs = p.attributes;
-  const imageUrl = attrs.images?.data?.[0]?.attributes?.url || "";
-  const categories =
-    attrs.categories?.data?.map((cat) => ({
-      id: cat.id,
-      name: cat.attributes.name,
-      slug: cat.attributes.slug,
-    })) || [];
+function mapStrapiProduct(p: any): Product | null {
+  if (!p || typeof p !== "object") return null;
+  // Strapi v4: { id, attributes: {...} }
+  // Strapi v5 (ou Document API): { id, name, slug, ... } direto
+  const attrs: any = p.attributes ? p.attributes : p;
+  if (!attrs || typeof attrs !== "object") return null;
+
+  // Imagem: tentar ambos formatos (media relation array) v4 e v5
+  let imageUrl = "";
+  if (attrs.images?.data?.[0]?.attributes?.url) {
+    imageUrl = attrs.images.data[0].attributes.url;
+  } else if (Array.isArray(attrs.images) && attrs.images[0]?.url) {
+    imageUrl = attrs.images[0].url;
+  }
+
+  // Categorias: v4 => attrs.categories.data[], v5 possivelmente attrs.categories[]
+  let rawCats: any[] = [];
+  if (attrs.categories?.data) rawCats = attrs.categories.data;
+  else if (Array.isArray(attrs.categories)) rawCats = attrs.categories;
+
+  const categories = rawCats
+    .filter((c) => c && (c.attributes || c.name))
+    .map((c) => {
+      const cAttrs = c.attributes ? c.attributes : c;
+      return {
+        id: c.id,
+        name: cAttrs.name,
+        slug: cAttrs.slug,
+      } as Category;
+    });
+
+  // Campos obrigatórios mínimos
+  if (!attrs.name || !attrs.slug) return null;
+
   return {
     id: p.id,
     title: attrs.name,
-    description: attrs.description,
-    price: Number(attrs.price), // garante número mesmo se vier string (decimal)
+    description: attrs.description || attrs.shortDescription || "",
+    price: Number(attrs.price) || 0,
     slug: attrs.slug,
     image: { url: imageUrl },
-    stock: attrs.stock,
+    stock: Number(attrs.stock) || 0,
     categories,
+    updatedAt: attrs.updatedAt,
   };
 }
 
@@ -120,89 +143,95 @@ function mapStrapiProduct(p: StrapiProduct): Product {
 
 // Categorias básicas
 export async function fetchCategories(): Promise<Category[]> {
-  const data = await safeFetch<{ data: StrapiCategory[] }>(
+  const data = await safeFetch<{ data: StrapiCategory[] | null }>(
     `${API_URL}/categories?populate=*`,
   );
-  return (
-    data?.data?.map((cat) => ({
+  if (!data || !Array.isArray(data.data)) return [];
+  return data.data
+    .filter((cat): cat is StrapiCategory => !!cat && !!cat.attributes)
+    .map((cat) => ({
       id: cat.id,
       name: cat.attributes.name,
       slug: cat.attributes.slug,
-    })) || []
-  );
+    }));
 }
 
 // Categorias completas para sitemap
 export async function getCollections(): Promise<
   { id: number; title: string; slug: string; updatedAt?: string }[]
 > {
-  const data = await safeFetch<{ data: StrapiCategory[] }>(
+  const data = await safeFetch<{ data: StrapiCategory[] | null }>(
     `${API_URL}/categories?populate=*`,
   );
-  return (
-    data?.data?.map((c) => ({
+  const list = Array.isArray(data?.data) ? data!.data : [];
+  return list
+    .filter((c): c is StrapiCategory => !!c && !!c.attributes)
+    .map((c) => ({
       id: c.id,
       title: c.attributes.name,
       slug: c.attributes.slug,
       updatedAt: c.attributes.updatedAt,
-    })) || []
-  );
+    }));
 }
 
 // Todos os produtos
 export async function fetchProducts(): Promise<Product[]> {
-  const query = `populate=images,categories&pagination[limit]=100&sort=id:desc`;
-  const data = await safeFetch<{ data: StrapiProduct[] }>(
-    `${API_URL}/products?${query}`,
-  );
-  return data?.data?.map(mapStrapiProduct) || [];
+  const query = `${PRODUCT_POPULATE}&pagination[limit]=100&sort=id:desc`;
+  const data = await safeFetch<{ data: any[] }>(`${API_URL}/products?${query}`);
+  return (data?.data || [])
+    .map(mapStrapiProduct)
+    .filter((p): p is Product => !!p);
 }
 
 // Produto único por slug
 export async function fetchProductBySlug(
   slug: string,
 ): Promise<Product | null> {
-  const data = await safeFetch<{ data: StrapiProduct[] }>(
-    `${API_URL}/products?filters[slug][$eq]=${slug}&populate=images,categories&pagination[limit]=1`,
+  const data = await safeFetch<{ data: any[] }>(
+    `${API_URL}/products?filters[slug][$eq]=${encodeURIComponent(
+      slug,
+    )}&${PRODUCT_POPULATE}&pagination[limit]=1`,
   );
-  return data?.data?.[0] ? mapStrapiProduct(data.data[0]) : null;
+  const prod = (data?.data || []).map(mapStrapiProduct).find(Boolean) || null;
+  return prod;
 }
 
 // Produtos de uma categoria
 export async function getCollectionProducts(slug: string): Promise<Product[]> {
   const categories = await safeFetch<{ data: StrapiCategory[] }>(
-    `${API_URL}/categories?filters[slug][$eq]=${slug}&pagination[limit]=1`,
+    `${API_URL}/categories?filters[slug][$eq]=${encodeURIComponent(
+      slug,
+    )}&pagination[limit]=1`,
   );
   const categoryId = categories?.data?.[0]?.id;
   if (!categoryId) return [];
-
-  const products = await safeFetch<{ data: StrapiProduct[] }>(
-    `${API_URL}/products?filters[categories][id][$eq]=${categoryId}&populate=images,categories&pagination[limit]=100&sort=id:desc`,
+  const products = await safeFetch<{ data: any[] }>(
+    `${API_URL}/products?filters[categories][id][$eq]=${categoryId}&${PRODUCT_POPULATE}&pagination[limit]=100&sort=id:desc`,
   );
-  return products?.data?.map(mapStrapiProduct) || [];
+  return (products?.data || [])
+    .map(mapStrapiProduct)
+    .filter((p): p is Product => !!p);
 }
 
 export async function getPage(slug: string) {
-  // v5: usa filters + pagination e mapeia o objeto {id, attributes}
   const url = `${API_URL}/pages?filters[slug][$eq]=${encodeURIComponent(
     slug,
   )}&populate=*&pagination[limit]=1`;
-  const data = await safeFetch<{ data: { id: number; attributes: any }[] }>(
-    url,
-  );
+  const data = await safeFetch<{
+    data: { id: number; attributes: Record<string, unknown> }[];
+  }>(url);
   const item = data?.data?.[0];
-  if (!item) return null;
-
-  const a = item.attributes;
+  if (!item || typeof item !== "object") return null;
+  const a = item.attributes as Record<string, unknown>;
   return {
     id: item.id,
-    title: a.title,
-    slug: a.slug,
-    body: a.body,
-    bodySummary: a.bodySummary,
-    createdAt: a.createdAt,
-    updatedAt: a.updatedAt,
-    seo: a.seo,
+    title: a["title"] as string,
+    slug: a["slug"] as string,
+    body: a["body"] as string,
+    bodySummary: a["bodySummary"] as string,
+    createdAt: a["createdAt"] as string,
+    updatedAt: a["updatedAt"] as string,
+    seo: a["seo"] as Record<string, unknown> | undefined,
   };
 }
 
@@ -211,14 +240,17 @@ export async function getPages(): Promise<
   { slug: string; updatedAt: string }[]
 > {
   const url = `${API_URL}/pages?pagination[limit]=100&sort=id:desc`;
-  const data = await safeFetch<{ data: { id: number; attributes: any }[] }>(
-    url,
-  );
+  const data = await safeFetch<{
+    data: { id: number; attributes: Record<string, unknown> }[];
+  }>(url);
   return (
-    data?.data?.map(({ attributes: a }) => ({
-      slug: a.slug,
-      updatedAt: a.updatedAt,
-    })) || []
+    data?.data?.map(({ attributes }) => {
+      const a = attributes as Record<string, unknown>;
+      return {
+        slug: a["slug"] as string,
+        updatedAt: (a["updatedAt"] as string) || "",
+      };
+    }) || []
   );
 }
 // Produtos com busca + ordenação
@@ -233,11 +265,35 @@ export async function getProducts({
 }): Promise<Product[]> {
   const params = new URLSearchParams();
   if (query) params.set("filters[name][$containsi]", query);
-  params.set("sort", `${sortKey}:${reverse ? "desc" : "asc"}`);
+  const allowedSort = ["createdAt", "price", "updatedAt", "name", "id"];
+  const finalSortKey = allowedSort.includes(sortKey) ? sortKey : "createdAt";
+  params.set("sort", `${finalSortKey}:${reverse ? "desc" : "asc"}`);
   params.set("pagination[limit]", "100");
-  params.set("populate", "images,categories");
-
-  const url = `${API_URL}/products?${params.toString()}`;
-  const data = await safeFetch<{ data: StrapiProduct[] }>(url);
-  return data?.data?.map(mapStrapiProduct) || [];
+  params.set("populate", "*");
+  const baseUrl = `${API_URL}/products?${params.toString()}`;
+  let data = await safeFetch<{ data: any[] }>(baseUrl);
+  if (!data || !Array.isArray(data.data)) {
+    const retry = new URLSearchParams(params);
+    retry.delete("sort");
+    data = await safeFetch<{ data: any[] }>(
+      `${API_URL}/products?${retry.toString()}`,
+    );
+  }
+  const raw = data?.data || [];
+  console.warn(
+    "[getProducts] raw length=",
+    raw.length,
+    "query=",
+    query,
+    "sample=",
+    raw[0] ? Object.keys(raw[0]) : null,
+  );
+  const mapped = raw.map(mapStrapiProduct);
+  const filtered = mapped.filter((p): p is Product => !!p);
+  if (filtered.length !== raw.length) {
+    console.warn(
+      `[getProducts] descartados ${raw.length - filtered.length} itens sem attributes/estruturas esperadas.`,
+    );
+  }
+  return filtered;
 }

@@ -1,16 +1,20 @@
+"use client";
+
 import CartModal from "@/app/components/cart/modal";
 import LogoSquare from "@/app/components/logo-square";
 import Link from "next/link";
 import { Suspense } from "react";
 import MobileMenu from "./mobile-menu";
 import Search, { SearchSkeleton } from "./search";
-import { fetchCategories } from "@/app/lib/api";
+import type { Category } from "@/app/types";
 
 const { SITE_NAME } = process.env;
 
-export async function Navbar() {
-  const categories = await fetchCategories();
+export interface NavbarProps {
+  categories: Category[];
+}
 
+export function Navbar({ categories }: NavbarProps) {
   return (
     <nav className="relative flex items-center justify-between p-4 lg:px-6">
       <div className="block flex-none md:hidden">
@@ -32,7 +36,7 @@ export async function Navbar() {
             </div>
           </Link>
 
-          {categories.length > 0 && (
+          {categories?.length > 0 && (
             <ul className="hidden gap-6 text-sm md:flex md:items-center">
               {categories.map((category) => (
                 <li key={category.id}>

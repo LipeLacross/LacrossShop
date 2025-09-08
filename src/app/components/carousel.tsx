@@ -1,5 +1,6 @@
 import { getCollectionProducts } from "@/app/lib/api";
 import { GridTileImage } from "./grid/tile";
+import Link from "next/link";
 
 export async function Carousel() {
   const products = await getCollectionProducts("hidden-homepage-carousel");

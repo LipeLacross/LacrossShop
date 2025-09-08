@@ -5,11 +5,20 @@ import { CartProvider } from "@/app/components/cart/cart-context";
 import { Navbar } from "@/app/components/layout/navbar";
 import { WelcomeToast } from "@/app/components/welcome-toast";
 import { Toaster } from "sonner";
+import type { Category } from "@/app/types";
 
-export default function ClientLayout({ children }: { children: ReactNode }) {
+interface ClientLayoutProps {
+  children: ReactNode;
+  categories: Category[];
+}
+
+export default function ClientLayout({
+  children,
+  categories,
+}: ClientLayoutProps) {
   return (
     <CartProvider>
-      <Navbar />
+      <Navbar categories={categories || []} />
       <Suspense fallback={null}>
         {children}
         <Toaster closeButton />
