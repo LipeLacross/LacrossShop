@@ -15,9 +15,18 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const pageData = await getPage(page);
   if (!pageData) notFound();
 
+  const seo =
+    (pageData.seo as Record<string, unknown> | undefined) || undefined;
+  const seoTitle =
+    seo && typeof seo.title === "string" ? (seo.title as string) : undefined;
+  const seoDesc =
+    seo && typeof seo.description === "string"
+      ? (seo.description as string)
+      : undefined;
+
   return {
-    title: pageData.seo?.title || pageData.title,
-    description: pageData.seo?.description || pageData.bodySummary,
+    title: seoTitle || pageData.title || undefined,
+    description: seoDesc || pageData.bodySummary || undefined,
     openGraph: {
       publishedTime: pageData.createdAt,
       modifiedTime: pageData.updatedAt,

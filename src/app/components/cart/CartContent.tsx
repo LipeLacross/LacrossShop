@@ -16,11 +16,11 @@ export default function CartContent() {
       <div className="text-center py-12">
         <div className="text-6xl mb-4">🛒</div>
         <h2 className="text-2xl font-bold mb-4">Seu carrinho está vazio</h2>
-        <p className="text-gray-600 mb-8">Adicione produtos para começar suas compras!</p>
+        <p className="text-gray-600 mb-8">
+          Adicione produtos para começar suas compras!
+        </p>
         <Link href="/">
-          <Button className="px-8 py-3 text-lg">
-            Continuar Comprando
-          </Button>
+          <Button className="px-8 py-3 text-lg">Continuar Comprando</Button>
         </Link>
       </div>
     );
@@ -34,23 +34,26 @@ export default function CartContent() {
 
     setUpdating(productId);
     setTimeout(() => {
-      setItems(prev => 
-        prev.map(item => 
-          item.product.id === productId 
-            ? { ...item, quantity: newQuantity }
-            : item
-        )
+      const next = items.map((item) =>
+        item.product.id === productId
+          ? { ...item, quantity: newQuantity }
+          : item,
       );
+      setItems(next);
       setUpdating(null);
     }, 300);
   };
 
   const removeItem = (productId: number) => {
-    setItems(prev => prev.filter(item => item.product.id !== productId));
+    const next = items.filter((item) => item.product.id !== productId);
+    setItems(next);
   };
 
   const calculateSubtotal = () => {
-    return items.reduce((total, item) => total + (item.product.price * item.quantity), 0);
+    return items.reduce(
+      (total, item) => total + item.product.price * item.quantity,
+      0,
+    );
   };
 
   const calculateTotal = () => {
@@ -60,13 +63,16 @@ export default function CartContent() {
   return (
     <div className="max-w-4xl mx-auto">
       <h1 className="text-3xl font-bold mb-8">Carrinho de Compras</h1>
-      
+
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Cart Items */}
         <div className="lg:col-span-2">
           <div className="bg-white rounded-lg shadow-sm border">
             {items.map(({ product, quantity }) => (
-              <div key={product.id} className="flex items-center p-4 border-b last:border-b-0">
+              <div
+                key={product.id}
+                className="flex items-center p-4 border-b last:border-b-0"
+              >
                 <div className="w-20 h-20 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
                   {product.image.url ? (
                     <Image
@@ -86,7 +92,7 @@ export default function CartContent() {
                 <div className="ml-4 flex-grow">
                   <h3 className="font-semibold text-lg">{product.title}</h3>
                   <p className="text-gray-600 text-sm mb-2">
-                    {product.categories.map(cat => cat.name).join(", ")}
+                    {product.categories.map((cat) => cat.name).join(", ")}
                   </p>
                   <p className="text-green-600 font-bold">
                     R$ {product.price.toFixed(2)}
@@ -101,14 +107,16 @@ export default function CartContent() {
                   >
                     <MinusIcon className="w-4 h-4" />
                   </button>
-                  
+
                   <span className="w-12 text-center font-medium">
                     {updating === product.id ? "..." : quantity}
                   </span>
-                  
+
                   <button
                     onClick={() => updateQuantity(product.id, quantity + 1)}
-                    disabled={updating === product.id || quantity >= product.stock}
+                    disabled={
+                      updating === product.id || quantity >= product.stock
+                    }
                     className="p-1 rounded-full hover:bg-gray-100 disabled:opacity-50"
                   >
                     <PlusIcon className="w-4 h-4" />
@@ -136,10 +144,14 @@ export default function CartContent() {
         <div className="lg:col-span-1">
           <div className="bg-white rounded-lg shadow-sm border p-6 sticky top-4">
             <h3 className="text-lg font-semibold mb-4">Resumo do Pedido</h3>
-            
+
             <div className="space-y-3 mb-4">
               <div className="flex justify-between">
-                <span>Subtotal ({items.reduce((total, item) => total + item.quantity, 0)} itens):</span>
+                <span>
+                  Subtotal (
+                  {items.reduce((total, item) => total + item.quantity, 0)}{" "}
+                  itens):
+                </span>
                 <span>R$ {calculateSubtotal().toFixed(2)}</span>
               </div>
               <div className="flex justify-between">

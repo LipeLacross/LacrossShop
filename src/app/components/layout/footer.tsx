@@ -22,10 +22,14 @@ export default async function Footer() {
     console.error("Erro ao buscar categorias no footer:", err);
   }
 
-  const menu = categories.map((cat) => ({
-    title: cat.name,
-    path: `/search/${cat.slug}`,
-  }));
+  const menu = [
+    ...categories.map((cat) => ({
+      title: cat.name,
+      path: `/search/${cat.slug}`,
+    })),
+    { title: "Política de Privacidade", path: "/politica-de-privacidade" },
+    { title: "Política de Devolução", path: "/politica-de-devolucao" },
+  ];
 
   const copyrightName = COMPANY_NAME || SITE_NAME || "NeoMercado";
 

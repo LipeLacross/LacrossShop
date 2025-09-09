@@ -10,7 +10,10 @@ export default async function Image({ params }: { params: { page: string } }) {
     return await OpengraphImage({ title: fallbackTitle });
   }
 
-  const title = pageData.seo?.title || pageData.title;
+  const seo = pageData.seo as Record<string, unknown> | undefined;
+  const seoTitle =
+    seo && typeof seo.title === "string" ? (seo.title as string) : "";
+  const title = (seoTitle || pageData.title || "NeoMercado") as string;
 
   return await OpengraphImage({ title });
 }

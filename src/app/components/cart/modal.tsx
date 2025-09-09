@@ -13,10 +13,14 @@ export default function CartModal() {
   const { items, setItems } = useCart();
 
   const itemCount = items.reduce((total, item) => total + item.quantity, 0);
-  const total = items.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
+  const total = items.reduce(
+    (sum, item) => sum + item.product.price * item.quantity,
+    0,
+  );
 
   const removeItem = (productId: number) => {
-    setItems(prev => prev.filter(item => item.product.id !== productId));
+    const next = items.filter((item) => item.product.id !== productId);
+    setItems(next);
   };
 
   const updateQuantity = (productId: number, newQuantity: number) => {
@@ -24,13 +28,10 @@ export default function CartModal() {
       removeItem(productId);
       return;
     }
-    setItems(prev => 
-      prev.map(item => 
-        item.product.id === productId 
-          ? { ...item, quantity: newQuantity }
-          : item
-      )
+    const next = items.map((item) =>
+      item.product.id === productId ? { ...item, quantity: newQuantity } : item,
     );
+    setItems(next);
   };
 
   return (
@@ -75,7 +76,7 @@ export default function CartModal() {
               <Dialog.Panel className="mx-auto w-full max-w-md rounded-lg bg-white shadow-xl">
                 <div className="flex items-center justify-between p-4 border-b">
                   <Dialog.Title className="text-lg font-semibold">
-                    Carrinho ({itemCount} {itemCount === 1 ? 'item' : 'itens'})
+                    Carrinho ({itemCount} {itemCount === 1 ? "item" : "itens"})
                   </Dialog.Title>
                   <button
                     onClick={() => setIsOpen(false)}
@@ -94,7 +95,10 @@ export default function CartModal() {
                   ) : (
                     <div className="p-4 space-y-3">
                       {items.map(({ product, quantity }) => (
-                        <div key={product.id} className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
+                        <div
+                          key={product.id}
+                          className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg"
+                        >
                           <div className="w-12 h-12 bg-gray-200 rounded overflow-hidden flex-shrink-0">
                             {product.image.url ? (
                               <Image
@@ -112,20 +116,30 @@ export default function CartModal() {
                           </div>
 
                           <div className="flex-grow min-w-0">
-                            <h4 className="font-medium text-sm truncate">{product.title}</h4>
-                            <p className="text-gray-600 text-sm">R$ {product.price.toFixed(2)}</p>
+                            <h4 className="font-medium text-sm truncate">
+                              {product.title}
+                            </h4>
+                            <p className="text-gray-600 text-sm">
+                              R$ {product.price.toFixed(2)}
+                            </p>
                           </div>
 
                           <div className="flex items-center space-x-2">
                             <button
-                              onClick={() => updateQuantity(product.id, quantity - 1)}
+                              onClick={() =>
+                                updateQuantity(product.id, quantity - 1)
+                              }
                               className="w-6 h-6 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center text-sm"
                             >
                               -
                             </button>
-                            <span className="w-8 text-center text-sm font-medium">{quantity}</span>
+                            <span className="w-8 text-center text-sm font-medium">
+                              {quantity}
+                            </span>
                             <button
-                              onClick={() => updateQuantity(product.id, quantity + 1)}
+                              onClick={() =>
+                                updateQuantity(product.id, quantity + 1)
+                              }
                               disabled={quantity >= product.stock}
                               className="w-6 h-6 rounded-full bg-gray-200 hover:bg-gray-300 disabled:opacity-50 flex items-center justify-center text-sm"
                             >
@@ -160,7 +174,7 @@ export default function CartModal() {
                           Ver Carrinho Completo
                         </Button>
                       </Link>
-                      
+
                       <Link href="/checkout" className="block">
                         <Button className="w-full bg-green-600 hover:bg-green-700">
                           Finalizar Compra

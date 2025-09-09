@@ -26,6 +26,12 @@
       "relation": "oneToMany",
       "target": "api::page.page",
       "mappedBy": "store"
+    },
+    "orders": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::order.order",
+      "mappedBy": "store"
     }
   }
 }

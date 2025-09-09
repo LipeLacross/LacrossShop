@@ -46,6 +46,14 @@ async function grantPublicRead(strapi: Strapi) {
     "api::product.product.findOne",
     "api::page.page.find",
     "api::page.page.findOne",
+    // Cupons (somente leitura)
+    "api::coupon.coupon.find",
+    "api::coupon.coupon.findOne",
+    // Permissão de criação de pedido (apenas DEV/demo)
+    "api::order.order.create",
+    // Leitura de pedido (para página de status por código)
+    "api::order.order.find",
+    "api::order.order.findOne",
   ])
     await upsertPermission(strapi, role.id, a);
   strapi.log.info("Permissões públicas mínimas OK.");
@@ -260,6 +268,12 @@ async function runSeed(strapi: Strapi) {
       title: "Política de Privacidade",
       bodySummary: "Dados & privacidade",
       body: "<h2>Privacidade</h2><p>Seu texto aqui…</p>",
+      featured: false,
+    },
+    {
+      title: "Política de Devolução",
+      bodySummary: "Trocas & devoluções",
+      body: "<h2>Devoluções</h2><p>Descreva regras de devolução, prazos e condições.</p>",
       featured: false,
     },
   ];

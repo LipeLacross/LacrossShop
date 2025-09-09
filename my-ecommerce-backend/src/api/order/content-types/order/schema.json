@@ -1,0 +1,25 @@
+{
+  "kind": "collectionType",
+  "collectionName": "orders",
+  "info": { "singularName": "order", "pluralName": "orders", "displayName": "Order" },
+  "pluginOptions": { "content-api": { "visible": true } },
+  "options": { "draftAndPublish": true },
+  "attributes": {
+    "code": { "type": "uid", "targetField": "customerName" },
+    "customerName": { "type": "string", "required": true },
+    "customerEmail": { "type": "email", "required": true },
+    "customerPhone": { "type": "string" },
+    "items": { "type": "json", "required": true },
+    "amount": { "type": "decimal", "default": 0 },
+    "shippingPrice": { "type": "decimal", "default": 0 },
+    "shippingLabel": { "type": "string" },
+    "address": { "type": "json" },
+    "provider": { "type": "string" },
+    "method": { "type": "string" },
+    "externalPaymentId": { "type": "string" },
+    "paymentUrl": { "type": "string" },
+    "status": { "type": "string", "default": "pending" },
+    "store": { "type": "relation", "relation": "manyToOne", "target": "api::store.store", "inversedBy": "orders" }
+  }
+}
+

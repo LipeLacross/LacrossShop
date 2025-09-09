@@ -25,5 +25,9 @@
     "eslint.config.mjs",
     "src/types/**/*.d.ts"
   ],
-  "exclude": ["node_modules", "react-app"]
+  "exclude": [
+    "node_modules",
+    "react-app",
+    "my-ecommerce-backend/**"
+  ]
 }

@@ -541,6 +541,50 @@ export interface ApiNavItemNavItem extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiOrderOrder extends Struct.CollectionTypeSchema {
+  collectionName: 'orders';
+  info: {
+    displayName: 'Order';
+    pluralName: 'orders';
+    singularName: 'order';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  pluginOptions: {
+    'content-api': {
+      visible: true;
+    };
+  };
+  attributes: {
+    address: Schema.Attribute.JSON;
+    amount: Schema.Attribute.Decimal & Schema.Attribute.DefaultTo<0>;
+    code: Schema.Attribute.UID<'customerName'>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    customerEmail: Schema.Attribute.Email & Schema.Attribute.Required;
+    customerName: Schema.Attribute.String & Schema.Attribute.Required;
+    customerPhone: Schema.Attribute.String;
+    externalPaymentId: Schema.Attribute.String;
+    items: Schema.Attribute.JSON & Schema.Attribute.Required;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<'oneToMany', 'api::order.order'> &
+      Schema.Attribute.Private;
+    method: Schema.Attribute.String;
+    paymentUrl: Schema.Attribute.String;
+    provider: Schema.Attribute.String;
+    publishedAt: Schema.Attribute.DateTime;
+    shippingLabel: Schema.Attribute.String;
+    shippingPrice: Schema.Attribute.Decimal & Schema.Attribute.DefaultTo<0>;
+    status: Schema.Attribute.String & Schema.Attribute.DefaultTo<'pending'>;
+    store: Schema.Attribute.Relation<'manyToOne', 'api::store.store'>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiPagePage extends Struct.CollectionTypeSchema {
   collectionName: 'pages';
   info: {
@@ -714,6 +758,7 @@ export interface ApiStoreStore extends Struct.CollectionTypeSchema {
     localizations: Schema.Attribute.Relation<'oneToMany', 'api::store.store'> &
       Schema.Attribute.Private;
     name: Schema.Attribute.String & Schema.Attribute.Required;
+    orders: Schema.Attribute.Relation<'oneToMany', 'api::order.order'>;
     pages: Schema.Attribute.Relation<'oneToMany', 'api::page.page'>;
     products: Schema.Attribute.Relation<'oneToMany', 'api::product.product'>;
     publishedAt: Schema.Attribute.DateTime;
@@ -1278,6 +1323,7 @@ declare module '@strapi/strapi' {
       'api::category.category': ApiCategoryCategory;
       'api::menu.menu': ApiMenuMenu;
       'api::nav-item.nav-item': ApiNavItemNavItem;
+      'api::order.order': ApiOrderOrder;
       'api::page.page': ApiPagePage;
       'api::product.product': ApiProductProduct;
       'api::review.review': ApiReviewReview;
