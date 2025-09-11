@@ -52,6 +52,9 @@ async function grantPublicRead(strapi: Strapi) {
   ])
     await upsertPermission(strapi, role.id, a);
 
+  // Rota segura: status do pedido por código (somente campos não sensíveis)
+  await upsertPermission(strapi, role.id, "api::order.order.statusByCode");
+
   // Criação de pedido: permitir somente em DEV ou se explicitamente habilitado
   const allowCreate =
     process.env.NODE_ENV !== "production" ||

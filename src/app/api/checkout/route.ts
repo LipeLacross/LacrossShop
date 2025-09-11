@@ -62,7 +62,9 @@ async function saveOrderOnStrapi(payload: Record<string, unknown>) {
   const res = await fetch(url, {
     method: "POST",
     headers,
-    body: JSON.stringify({ data: payload }),
+    body: JSON.stringify({
+      data: { ...payload, publishedAt: new Date().toISOString() },
+    }),
   });
   const json = await res.json().catch(() => ({}));
   if (!res.ok)

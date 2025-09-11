@@ -321,26 +321,17 @@ export async function getProducts({
 }
 
 export async function fetchOrderByCode(code: string): Promise<{
-  id: number;
   code: string;
   status: string;
-  amount: number;
-  method?: string;
-  paymentUrl?: string;
+  paymentUrl?: string | null;
 } | null> {
-  type OrderItem = { id: number; attributes: Record<string, unknown> };
-  type Resp = { data: OrderItem[] };
-  const url = `${API_URL}/orders?filters[code][$eq]=${encodeURIComponent(code)}&pagination[limit]=1`;
+  type Resp = { code?: string; status?: string; paymentUrl?: string | null };
+  const url = `${API_URL}/orders/status/${encodeURIComponent(code)}`;
   const data = await safeFetch<Resp>(url);
-  const item = data?.data?.[0];
-  if (!item) return null;
-  const a = item.attributes as Record<string, unknown>;
+  if (!data || (!data.code && !data.status)) return null;
   return {
-    id: item.id,
-    code: (a["code"] as string) || code,
-    status: (a["status"] as string) || "pending",
-    amount: Number(a["amount"] ?? 0),
-    method: (a["method"] as string) || undefined,
-    paymentUrl: (a["paymentUrl"] as string) || undefined,
+    code: data.code || code,
+    status: data.status || "pending",
+    paymentUrl: data.paymentUrl ?? null,
   };
 }
