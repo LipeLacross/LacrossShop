@@ -31,21 +31,25 @@ interface CartContextType {
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export function CartProvider({ children }: { children: ReactNode }) {
-  const [items, setItems] = useState<CartItem[]>([]);
+  const [items, setItems] = useState<CartItem[]>(() => {
+    if (typeof window === "undefined") return [];
+    try {
+      const stored = window.localStorage.getItem("cart");
+      return stored ? (JSON.parse(stored) as CartItem[]) : [];
+    } catch (err) {
+      console.warn("Falha ao carregar carrinho do localStorage", err);
+      return [];
+    }
+  });
 
   useEffect(() => {
     try {
-      const stored = localStorage.getItem("cart");
-      if (stored) {
-        setItems(JSON.parse(stored));
-      }
+      window.localStorage.setItem("cart", JSON.stringify(items));
+      // Opcional: sincronização básica entre abas
+      window.dispatchEvent(new Event("cart:updated"));
     } catch (err) {
-      console.warn("Falha ao carregar carrinho do localStorage", err);
+      console.warn("Falha ao salvar carrinho no localStorage", err);
     }
-  }, []);
-
-  useEffect(() => {
-    localStorage.setItem("cart", JSON.stringify(items));
   }, [items]);
 
   return (

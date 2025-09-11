@@ -1,8 +1,8 @@
 "use client";
 
-import { Fragment, useState } from "react";
+import { Fragment, useState, useEffect } from "react";
 import { Dialog, Transition } from "@headlessui/react";
-import { useCart } from "./cart-context";
+import { useCart } from "@/app/components/cart/cart-context";
 import { ShoppingBagIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import Image from "next/image";
 import Link from "next/link";
@@ -11,6 +11,21 @@ import { Button } from "../ui/button";
 export default function CartModal() {
   const [isOpen, setIsOpen] = useState(false);
   const { items, setItems } = useCart();
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
+  // Abre o carrinho quando alguém dispara o evento global 'cart:open'
+  useEffect(() => {
+    const onOpen = () => setIsOpen(true);
+    try {
+      window.addEventListener("cart:open", onOpen as EventListener);
+    } catch {}
+    return () => {
+      try {
+        window.removeEventListener("cart:open", onOpen as EventListener);
+      } catch {}
+    };
+  }, []);
 
   const itemCount = items.reduce((total, item) => total + item.quantity, 0);
   const total = items.reduce(
@@ -42,7 +57,7 @@ export default function CartModal() {
         aria-label="Abrir carrinho"
       >
         <ShoppingBagIcon className="h-6 w-6" />
-        {itemCount > 0 && (
+        {mounted && itemCount > 0 && (
           <span className="absolute -top-1 -right-1 bg-blue-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
             {itemCount > 99 ? "99+" : itemCount}
           </span>

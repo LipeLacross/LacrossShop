@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 import { Product } from "@/app/types";
-import { useCart } from "../cart/cart-context";
+import { useCart } from "@/app/components/cart/cart-context";
 import { Button } from "../ui/button";
+import { toast } from "sonner";
 
 interface AddToCartProps {
   product: Product;
@@ -28,8 +29,13 @@ export function AddToCart({ product }: AddToCartProps) {
 
     setItems(newItems);
     setQuantity(1);
-    // Opcional: aviso para o usuário, por exemplo toast
-    alert(`${quantity} × ${product.title} adicionado ao carrinho`);
+    // Feedback discreto e abrir carrinho automaticamente
+    try {
+      toast.success(`${quantity}× ${product.title} adicionado ao carrinho`);
+    } catch {}
+    try {
+      window.dispatchEvent(new CustomEvent("cart:open", { detail: { id: product.id } }));
+    } catch {}
   }
 
   return (

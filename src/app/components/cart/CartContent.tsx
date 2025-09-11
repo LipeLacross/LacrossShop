@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useCart } from "./cart-context";
+import { useCart } from "@/app/components/cart/cart-context";
 import { Button } from "../ui/button";
 import Image from "next/image";
 import Link from "next/link";
