@@ -27,6 +27,11 @@ export default function StatusClient({ code }: { code: string }) {
     () => data && (data.status === "paid" || data.status === "confirmed"),
     [data],
   );
+  const isFinal = useMemo(
+    () =>
+      data && ["paid", "confirmed", "canceled"].includes(String(data.status)),
+    [data],
+  );
 
   useEffect(() => {
     let mounted = true;
@@ -45,6 +50,11 @@ export default function StatusClient({ code }: { code: string }) {
         if (!res.ok) throw new Error(json?.error || `HTTP ${res.status}`);
         setData(json);
         setError("");
+        // Se chegou a um estado final, para o polling
+        if (["paid", "confirmed", "canceled"].includes(String(json.status))) {
+          if (timer) clearInterval(timer);
+          timer = undefined;
+        }
       } catch (e) {
         if (!mounted) return;
         setError(e instanceof Error ? e.message : "Erro ao buscar status");

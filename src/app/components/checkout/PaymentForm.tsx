@@ -54,6 +54,8 @@ export function PaymentForm({
     {},
   );
 
+  const [submitting, setSubmitting] = useState(false);
+  const [lastOrderCode, setLastOrderCode] = useState<string | null>(null);
   const [modal, setModal] = useState<null | {
     type: "pix" | "boleto";
     url?: string | null;
@@ -136,9 +138,11 @@ export function PaymentForm({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (submitting) return;
     if (!validateForm()) return;
 
     try {
+      setSubmitting(true);
       toast.loading("Processando pagamento...");
 
       const basePayload = {
@@ -189,8 +193,10 @@ export function PaymentForm({
           });
         }
         try {
-          if (json.orderCode)
+          if (json.orderCode) {
             sessionStorage.setItem("lastOrderCode", json.orderCode);
+            setLastOrderCode(String(json.orderCode));
+          }
         } catch {}
         onSuccess(json.paymentId as string);
         return;
@@ -225,8 +231,10 @@ export function PaymentForm({
         toast.dismiss();
         toast.success("Pagamento confirmado!");
         try {
-          if (json.orderCode)
+          if (json.orderCode) {
             sessionStorage.setItem("lastOrderCode", json.orderCode);
+            setLastOrderCode(String(json.orderCode));
+          }
         } catch {}
         onSuccess(json.paymentId as string);
         return;
@@ -239,6 +247,8 @@ export function PaymentForm({
         error instanceof Error ? error.message : "Erro ao processar pagamento";
       toast.error(errorMessage);
       onError(errorMessage);
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -522,8 +532,12 @@ export function PaymentForm({
 
         <div className="flex items-center justify-between">
           <div className="text-sm text-gray-600">Pagamento seguro</div>
-          <Button type="submit" disabled={loading} className="px-6 py-3">
-            {loading ? "Processando..." : "Pagar"}
+          <Button
+            type="submit"
+            disabled={loading || submitting}
+            className="px-6 py-3"
+          >
+            {loading || submitting ? "Processando..." : "Pagar"}
           </Button>
         </div>
       </form>
@@ -544,13 +558,25 @@ export function PaymentForm({
             <div className="mb-3 break-all rounded bg-gray-100 p-2 text-xs text-gray-700">
               {modal.pixPayload}
             </div>
-            <div className="flex justify-end gap-2">
+            <div className="mt-2 flex items-center justify-between text-sm">
+              {lastOrderCode ? (
+                <a
+                  href={`/pedido/${encodeURIComponent(lastOrderCode)}`}
+                  className="text-blue-600 underline"
+                >
+                  Ver status do pedido
+                </a>
+              ) : (
+                <span />
+              )}
               <button
                 onClick={() => copyToClipboard(modal.pixPayload)}
                 className="rounded bg-neutral-200 px-3 py-1 text-sm hover:bg-neutral-300 dark:bg-neutral-700 dark:text-white dark:hover:bg-neutral-600"
               >
                 Copiar código do PIX
               </button>
+            </div>
+            <div className="mt-4 flex justify-end">
               <button
                 onClick={() => setModal(null)}
                 className="rounded bg-blue-600 px-3 py-1 text-sm text-white hover:bg-blue-700"
@@ -578,6 +604,16 @@ export function PaymentForm({
             ) : null}
             <div className="mt-3 text-xs text-gray-700">
               Linha digitável: {modal.boletoLine || "—"}
+            </div>
+            <div className="mt-2">
+              {lastOrderCode && (
+                <a
+                  href={`/pedido/${encodeURIComponent(lastOrderCode)}`}
+                  className="text-blue-600 underline text-sm"
+                >
+                  Ver status do pedido
+                </a>
+              )}
             </div>
             <div className="mt-4 flex justify-end gap-2">
               <button

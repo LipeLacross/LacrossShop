@@ -124,6 +124,7 @@ export async function POST(req: NextRequest) {
       shipping,
       provider,
       card,
+      installments,
     } = body as {
       email: string;
       name: string;
@@ -145,6 +146,7 @@ export async function POST(req: NextRequest) {
         expiryYear: string;
         cvv: string;
       };
+      installments?: number;
     };
 
     if (!email || !name || !amount || !method) {
@@ -195,6 +197,11 @@ export async function POST(req: NextRequest) {
           phone: phone || undefined,
           mobilePhone: phone || undefined,
         },
+        ...(installments && installments > 1
+          ? {
+              installmentCount: Math.min(12, Math.max(2, Number(installments))),
+            }
+          : {}),
       };
       const payRes = await asaasFetch(`/payments`, {
         method: "POST",
