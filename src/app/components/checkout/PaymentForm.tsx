@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Button } from "../ui/button";
 import { toast } from "sonner";
 
@@ -62,6 +62,46 @@ export function PaymentForm({
     boletoLine?: string;
   }>(null);
 
+  const [couponCode, setCouponCode] = useState<string>("");
+  const [discount, setDiscount] = useState<number>(0);
+  const [freeShipping, setFreeShipping] = useState<boolean>(false);
+
+  const shippingPrice = shipping?.price || 0;
+  const effectiveShipping = freeShipping ? 0 : shippingPrice;
+  const subtotal = amount - (shipping?.price || 0); // amount vem com frete somado da página
+  const finalAmount = useMemo(
+    () =>
+      Number(Math.max(0, subtotal - discount + effectiveShipping).toFixed(2)),
+    [subtotal, discount, effectiveShipping],
+  );
+
+  const applyCoupon = async () => {
+    if (!couponCode.trim()) return;
+    try {
+      const res = await fetch("/api/promo/apply", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          code: couponCode.trim(),
+          amount: subtotal,
+          shippingPrice,
+        }),
+      });
+      const json = await res.json();
+      if (!res.ok || !json.valid) {
+        setDiscount(0);
+        setFreeShipping(false);
+        toast.error(json?.message || "Cupom inválido");
+        return;
+      }
+      setDiscount(Number(json.discount || 0));
+      setFreeShipping(Boolean(json.freeShipping));
+      toast.success("Cupom aplicado");
+    } catch {
+      toast.error("Falha ao aplicar cupom");
+    }
+  };
+
   const validateForm = (): boolean => {
     const newErrors: Partial<PaymentData & typeof cardData> = {};
 
@@ -101,23 +141,31 @@ export function PaymentForm({
     try {
       toast.loading("Processando pagamento...");
 
+      const basePayload = {
+        email: customer?.email,
+        name: customer?.name,
+        phone: customer?.phone,
+        cpfCnpj: customer?.cpfCnpj,
+        amount: finalAmount, // usa valor final com desconto e frete efetivo
+        method: paymentData.method,
+        provider: paymentData.gateway,
+        items,
+        shipping: shipping
+          ? { ...shipping, price: effectiveShipping }
+          : undefined,
+        installments:
+          paymentData.installments && paymentData.installments > 1
+            ? paymentData.installments
+            : undefined,
+      } as Record<string, unknown>;
+
       if (paymentData.method === "boleto" || paymentData.method === "pix") {
         if (!customer?.email || !customer?.name)
           throw new Error("Nome e e-mail são obrigatórios");
         const res = await fetch("/api/checkout", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            email: customer.email,
-            name: customer.name,
-            phone: customer.phone,
-            cpfCnpj: customer.cpfCnpj,
-            amount,
-            method: paymentData.method,
-            provider: paymentData.gateway,
-            items,
-            shipping,
-          }),
+          body: JSON.stringify(basePayload),
         });
         const json = await res.json();
         if (!res.ok)
@@ -158,15 +206,8 @@ export function PaymentForm({
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            email: customer.email,
-            name: customer.name,
-            phone: customer.phone,
-            cpfCnpj: customer.cpfCnpj,
-            amount,
+            ...basePayload,
             method: "credit_card",
-            provider: paymentData.gateway,
-            items,
-            shipping,
             card: {
               number: cardData.number.replace(/\s+/g, ""),
               holderName: cardData.holderName,
@@ -228,6 +269,7 @@ export function PaymentForm({
   const months = Array.from({ length: 12 }, (_, i) => i + 1);
   const currentYear = new Date().getFullYear();
   const years = Array.from({ length: 10 }, (_, i) => currentYear + i);
+  const installmentOptions = [1, 2, 3, 4, 5, 6, 10, 12];
 
   return (
     <>
@@ -235,11 +277,45 @@ export function PaymentForm({
         <div className="bg-gray-50 p-4 rounded-lg">
           <h3 className="text-lg font-semibold mb-4">Resumo do Pedido</h3>
           <div className="flex justify-between items-center">
-            <span className="text-gray-600">Total a pagar:</span>
-            <span className="text-2xl font-bold text-green-600">
-              R$ {amount.toFixed(2)}
+            <span className="text-gray-600">Subtotal:</span>
+            <span>R$ {subtotal.toFixed(2)}</span>
+          </div>
+          {discount > 0 && (
+            <div className="flex justify-between items-center text-green-700">
+              <span>Desconto:</span>
+              <span>- R$ {discount.toFixed(2)}</span>
+            </div>
+          )}
+          <div className="flex justify-between items-center">
+            <span>Frete:</span>
+            <span className={freeShipping ? "text-green-600" : ""}>
+              {freeShipping ? "Grátis" : `R$ ${effectiveShipping.toFixed(2)}`}
             </span>
           </div>
+          <div className="flex justify-between items-center mt-2">
+            <span className="text-gray-600">Total a pagar:</span>
+            <span className="text-2xl font-bold text-green-600">
+              R$ {finalAmount.toFixed(2)}
+            </span>
+          </div>
+        </div>
+
+        <div className="flex gap-2 items-end">
+          <div className="flex-1">
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Cupom de desconto
+            </label>
+            <input
+              type="text"
+              value={couponCode}
+              onChange={(e) => setCouponCode(e.target.value)}
+              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="EXEMPLO10"
+            />
+          </div>
+          <Button type="button" onClick={applyCoupon} className="px-4 py-2">
+            Aplicar
+          </Button>
         </div>
 
         <div>
@@ -275,37 +351,30 @@ export function PaymentForm({
           </div>
         </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-3">
-            Gateway de Pagamento
-          </label>
-          <div className="grid grid-cols-3 gap-3">
-            {[
-              { value: "asaas", label: "Asaas", icon: "🏦" },
-              { value: "mercadopago", label: "Mercado Pago", icon: "🛒" },
-              { value: "stripe", label: "Stripe", icon: "💳" },
-            ].map((gateway) => (
-              <button
-                key={gateway.value}
-                type="button"
-                onClick={() =>
-                  setPaymentData((prev) => ({
-                    ...prev,
-                    gateway: gateway.value as PaymentData["gateway"],
-                  }))
-                }
-                className={`p-3 border rounded-lg text-center transition-colors ${
-                  paymentData.gateway === gateway.value
-                    ? "border-blue-500 bg-blue-50 text-blue-700"
-                    : "border-gray-300 hover:border-gray-400"
-                }`}
-              >
-                <div className="text-2xl mb-1">{gateway.icon}</div>
-                <div className="text-sm font-medium">{gateway.label}</div>
-              </button>
-            ))}
+        {(paymentData.method === "credit_card" ||
+          paymentData.method === "debit_card") && (
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-3">
+              Parcelas
+            </label>
+            <select
+              value={paymentData.installments || 1}
+              onChange={(e) =>
+                setPaymentData((p) => ({
+                  ...p,
+                  installments: Number(e.target.value) || 1,
+                }))
+              }
+              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              {installmentOptions.map((n) => (
+                <option key={n} value={n}>
+                  {n}x de R$ {(finalAmount / n).toFixed(2)}
+                </option>
+              ))}
+            </select>
           </div>
-        </div>
+        )}
 
         {(paymentData.method === "credit_card" ||
           paymentData.method === "debit_card") && (

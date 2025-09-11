@@ -6,6 +6,7 @@ import { Navbar } from "@/app/components/layout/navbar";
 import { WelcomeToast } from "@/app/components/welcome-toast";
 import { Toaster } from "sonner";
 import type { Category } from "@/app/types";
+import CookieConsent from "../cookie-consent";
 
 interface ClientLayoutProps {
   children: ReactNode;
@@ -23,6 +24,7 @@ export default function ClientLayout({
         {children}
         <Toaster closeButton />
         <WelcomeToast />
+        <CookieConsent />
       </Suspense>
     </CartProvider>
   );

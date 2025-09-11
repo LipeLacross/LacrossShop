@@ -15,7 +15,7 @@ export function orderReceivedTemplate(params: {
     paymentUrl,
   } = params;
   return `
-    <h2>Pedido recebido</h2>
+    <h2>Pedido ${orderCode} recebido</h2>
     <p>Olá, ${name}. Recebemos seu pedido no NeoMercado.</p>
     ${itemsHtml}
     ${shippingHtml}

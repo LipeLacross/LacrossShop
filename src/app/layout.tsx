@@ -24,7 +24,7 @@ export default async function RootLayout({
   const categories = await fetchCategories();
   return (
     <html
-      lang="en"
+      lang="pt-BR"
       className={GeistSans?.variable ?? ""}
       suppressHydrationWarning
     >

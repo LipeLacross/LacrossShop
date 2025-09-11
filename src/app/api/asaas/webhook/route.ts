@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
 import { rateLimit } from "@/app/lib/rate-limit";
 import nodemailer from "nodemailer";
+import { orderPaidTemplate } from "@/app/lib/email-templates";
 
 // Atualiza status do pedido no Strapi e dispara e-mail de pagamento aprovado
 async function updateOrderStatus(paymentId: string, status: string) {
@@ -46,7 +47,7 @@ async function updateOrderStatus(paymentId: string, status: string) {
         from,
         to: email,
         subject: `Pagamento aprovado (${code}) - NeoMercado`,
-        html: `<h2>Pagamento aprovado!</h2><p>Olá, ${name}. Seu pedido foi confirmado e será processado em breve.</p>`,
+        html: orderPaidTemplate({ name, orderCode: code }),
       });
     };
     await sendEmail().catch(() => null);
