@@ -6,7 +6,6 @@ import Usps from "@/app/components/home/Usps";
 import CtaBanner from "@/app/components/home/CtaBanner";
 import TrustBadges from "@/app/components/home/TrustBadges";
 import Reviews from "@/app/components/home/Reviews";
-import Link from "next/link";
 
 export const metadata = {
   description: "NeoMercado — loja virtual moderna, rápida e escalável.",

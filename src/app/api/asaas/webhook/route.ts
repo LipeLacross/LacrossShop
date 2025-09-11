@@ -7,13 +7,17 @@ export const dynamic = "force-dynamic";
 // Util: lê corpo bruto e JSON de forma segura
 async function readBody(req: NextRequest) {
   const raw = await req.text();
-  let json: any = null;
+  let json: unknown = null;
   try {
     json = JSON.parse(raw);
-  } catch (_) {
-    // ignora; trata abaixo
+  } catch {
+    // ignorar parse inválido; json permanece null
   }
   return { raw, json } as const;
+}
+
+function isObject(x: unknown): x is Record<string, unknown> {
+  return typeof x === "object" && x !== null;
 }
 
 function timingSafeEqual(a: string, b: string) {
@@ -113,7 +117,7 @@ async function updateOrderStatus(
 
 export async function POST(req: NextRequest) {
   try {
-    // Rate limit leve por IP
+    // Rate limit leve por IP (placeholder)
     const ip = (
       req.headers.get("cf-connecting-ip") ||
       req.headers.get("x-forwarded-for") ||
@@ -121,11 +125,9 @@ export async function POST(req: NextRequest) {
     )
       .split(",")[0]
       .trim();
-    const key = `asaas:wh:${ip}`;
-    // Armazenamento simples em memória não está disponível entre invocações; manter apenas como nota. Em produção, use KV/Redis.
 
     const { raw, json } = await readBody(req);
-    if (!json)
+    if (!json || !isObject(json))
       return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
 
     const secret = process.env.ASAAS_WEBHOOK_SECRET || "";
@@ -147,10 +149,21 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    const event = json.event as string | undefined;
-    const payment = json.payment || json.data || {};
-    const paymentId: string | undefined = payment?.id;
-    const paymentStatus: string | undefined = payment?.status;
+    const payload = json as Record<string, unknown>;
+    const event =
+      typeof payload.event === "string" ? (payload.event as string) : undefined;
+    const paymentObjRaw = isObject(payload.payment)
+      ? payload.payment
+      : isObject(payload.data)
+        ? payload.data
+        : {};
+    const paymentObj = isObject(paymentObjRaw) ? paymentObjRaw : {};
+    const paymentId =
+      typeof paymentObj.id === "string" ? (paymentObj.id as string) : undefined;
+    const paymentStatus =
+      typeof paymentObj.status === "string"
+        ? (paymentObj.status as string)
+        : undefined;
 
     if (!paymentId) {
       return NextResponse.json(

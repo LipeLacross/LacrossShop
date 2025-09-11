@@ -27,15 +27,10 @@ export default function StatusClient({ code }: { code: string }) {
     () => data && (data.status === "paid" || data.status === "confirmed"),
     [data],
   );
-  const isFinal = useMemo(
-    () =>
-      data && ["paid", "confirmed", "canceled"].includes(String(data.status)),
-    [data],
-  );
 
   useEffect(() => {
     let mounted = true;
-    let timer: any;
+    let timer: number | undefined;
 
     async function fetchStatus() {
       try {
@@ -53,10 +48,13 @@ export default function StatusClient({ code }: { code: string }) {
         // Se chegou a um estado final, para o polling
         if (["paid", "confirmed", "canceled"].includes(String(json.status))) {
           if (timer) clearInterval(timer);
-          timer = undefined;
+        if (!res.ok) {
+          setError(json?.error || `HTTP ${res.status}`);
+          return;
         }
-      } catch (e) {
-        if (!mounted) return;
+        setData(json);
+        setError("");
+        // Se chegou a um estado final, para o polling
         setError(e instanceof Error ? e.message : "Erro ao buscar status");
       } finally {
         if (mounted) setLoading(false);
@@ -70,7 +68,7 @@ export default function StatusClient({ code }: { code: string }) {
       if (timer) clearInterval(timer);
     };
   }, [code]);
-
+    timer = window.setInterval(fetchStatus, 5000);
   if (loading && !data)
     return (
       <p className="text-neutral-600 dark:text-neutral-300">
