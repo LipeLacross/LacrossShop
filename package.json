@@ -11,6 +11,7 @@
   "dependencies": {
     "@headlessui/react": "^2.2.4",
     "@heroicons/react": "^2.2.0",
+    "@sentry/nextjs": "^8.35.0",
     "@tailwindcss/typography": "^0.5.16",
     "asaas-node-sdk": "^0.1.0",
     "axios": "^1.10.0",

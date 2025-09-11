@@ -11,15 +11,17 @@ import CookieConsent from "../cookie-consent";
 interface ClientLayoutProps {
   children: ReactNode;
   categories: Category[];
+  siteName?: string;
 }
 
 export default function ClientLayout({
   children,
   categories,
+  siteName,
 }: ClientLayoutProps) {
   return (
     <CartProvider>
-      <Navbar categories={categories || []} />
+      <Navbar categories={categories || []} siteName={siteName} />
       <Suspense fallback={null}>
         {children}
         <Toaster closeButton />

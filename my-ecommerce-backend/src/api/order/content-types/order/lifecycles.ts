@@ -1,4 +1,5 @@
-import type { Lifecycle } from "@strapi/strapi";
+// Removido import de tipo específico do Strapi para compatibilidade de tipos
+// import type { Lifecycle } from "@strapi/strapi";
 
 // Tipos defensivos
 type OrderItem = {
@@ -8,8 +9,8 @@ type OrderItem = {
   quantity?: number;
 };
 
-const orderLifecycle: Lifecycle = {
-  async beforeCreate(event) {
+const orderLifecycle /* : any */ = {
+  async beforeCreate(event: any) {
     const data = event.params?.data as Record<string, any>;
     const items = (data?.items as OrderItem[]) || [];
     if (!Array.isArray(items) || items.length === 0) return;
@@ -27,7 +28,7 @@ const orderLifecycle: Lifecycle = {
       where: { id: { $in: ids } },
       select: ["id", "stock", "active"],
     });
-    const stockMap = new Map(products.map((p) => [p.id, p]));
+    const stockMap = new Map(products.map((p: any) => [p.id, p]));
 
     for (const it of items) {
       const pid = Number(it.productId || it.id);
@@ -41,11 +42,10 @@ const orderLifecycle: Lifecycle = {
     }
   },
 
-  async afterUpdate(event) {
-    const { data, where } = event.params as any;
-    const updated = event.result as Record<string, any> | null;
+  async afterUpdate(event: any) {
+    const updated = (event as any).result as Record<string, any> | null;
     if (!updated) return;
-    const status = (updated as any).status || data?.status;
+    const status = (updated as any).status;
     if (!status || !["paid", "confirmed"].includes(String(status))) return;
 
     const items = (updated.items as OrderItem[]) || [];
@@ -62,7 +62,9 @@ const orderLifecycle: Lifecycle = {
       where: { id: { $in: ids } },
       select: ["id", "stock"],
     });
-    const stockMap = new Map(products.map((p) => [p.id, Number(p.stock || 0)]));
+    const stockMap = new Map(
+      products.map((p: any) => [p.id, Number(p.stock || 0)]),
+    );
 
     for (const it of items) {
       const pid = Number(it.productId || it.id);

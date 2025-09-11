@@ -8,13 +8,12 @@ import MobileMenu from "./mobile-menu";
 import Search, { SearchSkeleton } from "./search";
 import type { Category } from "@/app/types";
 
-const { SITE_NAME } = process.env;
-
 export interface NavbarProps {
   categories: Category[];
+  siteName?: string;
 }
 
-export function Navbar({ categories }: NavbarProps) {
+export function Navbar({ categories, siteName }: NavbarProps) {
   return (
     <nav className="relative flex items-center justify-between p-4 lg:px-6">
       <div className="block flex-none md:hidden">
@@ -32,7 +31,7 @@ export function Navbar({ categories }: NavbarProps) {
           >
             <LogoSquare />
             <div className="ml-2 flex-none text-sm font-medium uppercase md:hidden lg:block">
-              {SITE_NAME}
+              {siteName || "NeoMercado"}
             </div>
           </Link>
 

@@ -49,13 +49,27 @@ async function grantPublicRead(strapi: Strapi) {
     // Cupons (somente leitura)
     "api::coupon.coupon.find",
     "api::coupon.coupon.findOne",
-    // Permissão de criação de pedido (apenas DEV/demo)
-    "api::order.order.create",
-    // Leitura de pedido (para página de status por código)
-    "api::order.order.find",
-    "api::order.order.findOne",
   ])
     await upsertPermission(strapi, role.id, a);
+
+  // Criação de pedido: permitir somente em DEV ou se explicitamente habilitado
+  const allowCreate =
+    process.env.NODE_ENV !== "production" ||
+    process.env.ALLOW_PUBLIC_ORDER_CREATE === "true";
+  if (allowCreate) {
+    await upsertPermission(strapi, role.id, "api::order.order.create");
+    // Leitura de pedido (para página de status por código)
+    await upsertPermission(strapi, role.id, "api::order.order.find");
+    await upsertPermission(strapi, role.id, "api::order.order.findOne");
+    strapi.log.info(
+      "Permissões públicas para pedidos habilitadas (dev/explicit).",
+    );
+  } else {
+    strapi.log.info(
+      "Permissão pública de criação de pedidos desabilitada (produção).",
+    );
+  }
+
   strapi.log.info("Permissões públicas mínimas OK.");
 }
 

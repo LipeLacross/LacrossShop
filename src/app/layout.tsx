@@ -32,7 +32,12 @@ export default async function RootLayout({
         className="bg-neutral-50 text-black dark:bg-neutral-900 dark:text-white selection:bg-teal-300 dark:selection:bg-pink-500 dark:selection:text-white"
         suppressHydrationWarning
       >
-        <ClientLayout categories={categories}>{children}</ClientLayout>
+        <ClientLayout
+          categories={categories}
+          siteName={SITE_NAME || "NeoMercado"}
+        >
+          {children}
+        </ClientLayout>
       </body>
     </html>
   );

@@ -6,8 +6,18 @@ const patterns: Array<{
   port?: string;
   pathname: string;
 }> = [
-  { protocol: "http", hostname: "localhost", port: "1337", pathname: "/uploads/**" },
-  { protocol: "http", hostname: "127.0.0.1", port: "1337", pathname: "/uploads/**" },
+  {
+    protocol: "http",
+    hostname: "localhost",
+    port: "1337",
+    pathname: "/uploads/**",
+  },
+  {
+    protocol: "http",
+    hostname: "127.0.0.1",
+    port: "1337",
+    pathname: "/uploads/**",
+  },
 ];
 
 try {
@@ -28,10 +38,23 @@ try {
   }
 } catch {}
 
-const nextConfig: NextConfig = {
-  images: {
-    remotePatterns: patterns,
-  },
+const baseConfig: NextConfig = {
+  images: { remotePatterns: patterns },
+  // Sentry já lê sentry.*.config.ts
 };
 
-export default nextConfig;
+let exported: NextConfig | any = baseConfig;
+
+try {
+  // Import dinâmico para evitar crash quando pacote não estiver instalado
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  const { withSentryConfig } = require("@sentry/nextjs");
+  const hasDsn = process.env.SENTRY_DSN || process.env.NEXT_PUBLIC_SENTRY_DSN;
+  exported = hasDsn
+    ? withSentryConfig(baseConfig, { silent: true })
+    : baseConfig;
+} catch {
+  exported = baseConfig;
+}
+
+export default exported;
