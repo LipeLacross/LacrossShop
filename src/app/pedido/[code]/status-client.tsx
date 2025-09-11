@@ -32,43 +32,53 @@ export default function StatusClient({ code }: { code: string }) {
     let mounted = true;
     let timer: number | undefined;
 
-    async function fetchStatus() {
-      try {
-        const res = await fetch(
-          `/api/orders/status/${encodeURIComponent(code)}`,
-          {
-            cache: "no-store",
-          },
-        );
-        const json = (await res.json()) as OrderStatusResp;
-        if (!mounted) return;
-        if (!res.ok) throw new Error(json?.error || `HTTP ${res.status}`);
-        setData(json);
-        setError("");
-        // Se chegou a um estado final, para o polling
-        if (["paid", "confirmed", "canceled"].includes(String(json.status))) {
-          if (timer) clearInterval(timer);
-        if (!res.ok) {
-          setError(json?.error || `HTTP ${res.status}`);
-          return;
-        }
-        setData(json);
-        setError("");
-        // Se chegou a um estado final, para o polling
-        setError(e instanceof Error ? e.message : "Erro ao buscar status");
-      } finally {
-        if (mounted) setLoading(false);
-      }
-    }
+    const fetchStatus = async () => {
+      const res = await fetch(
+        `/api/orders/status/${encodeURIComponent(code)}`,
+        {
+          cache: "no-store",
+        },
+      ).catch(() => null);
 
+      if (!mounted) return;
+      if (!res) {
+        setError("Falha de rede ao consultar status");
+        setLoading(false);
+        return;
+      }
+
+      const json = (await res.json().catch(() => null)) as OrderStatusResp | null;
+      if (!mounted) return;
+      if (!json) {
+        setError("Resposta inválida do servidor");
+        setLoading(false);
+        return;
+      }
+      if (!res.ok) {
+        setError(json.error || `HTTP ${res.status}`);
+        setLoading(false);
+        return;
+      }
+
+      setData(json);
+      setError("");
+      if (["paid", "confirmed", "canceled"].includes(String(json.status))) {
+        if (timer) clearInterval(timer);
+        timer = undefined;
+      }
+      setLoading(false);
+    };
+
+    // Primeira busca imediata, depois polling
     fetchStatus();
-    timer = setInterval(fetchStatus, 5000);
+    timer = window.setInterval(fetchStatus, 5000);
+
     return () => {
       mounted = false;
       if (timer) clearInterval(timer);
     };
   }, [code]);
-    timer = window.setInterval(fetchStatus, 5000);
+
   if (loading && !data)
     return (
       <p className="text-neutral-600 dark:text-neutral-300">
@@ -78,7 +88,8 @@ export default function StatusClient({ code }: { code: string }) {
 
   if (error && !data)
     return (
-      <div className="rounded border border-amber-300 bg-amber-50 p-4 text-amber-900 dark:border-amber-800 dark:bg-amber-900/20 dark:text-amber-200">
+    return (
+        Falha ao consultar status: {error}
         Falha ao consultar status: {error}
       </div>
     );

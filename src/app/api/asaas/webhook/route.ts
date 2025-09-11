@@ -118,13 +118,13 @@ async function updateOrderStatus(
 export async function POST(req: NextRequest) {
   try {
     // Rate limit leve por IP (placeholder)
-    const ip = (
-      req.headers.get("cf-connecting-ip") ||
-      req.headers.get("x-forwarded-for") ||
-      ""
-    )
-      .split(",")[0]
-      .trim();
+    // const ip = (
+    //   req.headers.get("cf-connecting-ip") ||
+    //   req.headers.get("x-forwarded-for") ||
+    //   ""
+    // )
+    //   .split(",")[0]
+    //   .trim();
 
     const { raw, json } = await readBody(req);
     if (!json || !isObject(json))
