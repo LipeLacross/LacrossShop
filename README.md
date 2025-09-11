@@ -7,8 +7,6 @@ NeoMercado é um **template de e-commerce headless full-stack** pronto para prod
 - **Frontend**: Next.js 15, React 19, Tailwind CSS 4, checkout sem cadastro, integração com pagamentos **Asaas** e frete **Melhor Envio**.  
 - **Backend**: Strapi v5, com catálogo, cupons, pedidos, páginas institucionais e webhooks de pagamento.  
 
-Uma solução **moderna, rápida e escalável**, com foco em DX (developer experience) e UX (experiência do usuário final).
-
 ---
 
 ## 🔨 Funcionalidades do Projeto
@@ -43,7 +41,6 @@ Uma solução **moderna, rápida e escalável**, com foco em DX (developer exper
        width="80%" 
        style="margin: 16px 0; border-radius: 10px;">
 </div>
----
 
 ## ✔️ Técnicas e Tecnologias Utilizadas
 
