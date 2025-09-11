@@ -6,9 +6,9 @@ export const dynamic = "force-dynamic";
 export default async function OrderStatusPage({
   params,
 }: {
-  params: { code: string };
+  params: Promise<{ code: string }>;
 }) {
-  const { code } = params;
+  const { code } = await params;
   return (
     <div className="container mx-auto max-w-3xl px-4 py-12">
       <h1 className="mb-2 text-2xl font-bold">Pedido {code}</h1>

@@ -88,8 +88,9 @@ async function melhorEnvioQuote(
       },
     );
     if (!res.ok) {
-      const t = await res.text();
-      throw new Error(`Melhor Envio: ${res.status} ${t}`);
+      // Em caso de erro no provedor, usa fallback
+      await res.text().catch(() => "");
+      return null;
     }
     const data = (await res.json()) as MECalcResponseItem[];
     const valid = (data || []).filter(
