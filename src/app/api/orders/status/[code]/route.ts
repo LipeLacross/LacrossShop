@@ -6,22 +6,21 @@ function strapiBase() {
   ).replace(/\/+$/, "");
 }
 
-export async function GET(
-  _req: NextRequest,
-  { params }: { params: { code: string } },
-) {
+export async function GET(req: NextRequest) {
   try {
-    const code = params?.code;
+    const url = req.nextUrl ?? new URL(req.url);
+    const parts = url.pathname.split("/").filter(Boolean);
+    const code = parts[parts.length - 1] || "";
     if (!code)
       return NextResponse.json({ error: "Missing code" }, { status: 400 });
 
-    const url = `${strapiBase()}/api/orders/status/${encodeURIComponent(code)}`;
+    const apiUrl = `${strapiBase()}/api/orders/status/${encodeURIComponent(code)}`;
     const headers: Record<string, string> = {
       "Content-Type": "application/json",
     };
     const token = process.env.STRAPI_TOKEN;
     if (token) headers["Authorization"] = `Bearer ${token}`;
-    const res = await fetch(url, { headers, cache: "no-store" });
+    const res = await fetch(apiUrl, { headers, cache: "no-store" });
     const data = await res.json().catch(() => ({}));
     if (!res.ok) return NextResponse.json(data, { status: res.status });
     return NextResponse.json(data, { status: 200 });
