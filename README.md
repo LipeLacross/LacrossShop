@@ -38,10 +38,11 @@ Uma solução **moderna, rápida e escalável**, com foco em DX (developer exper
 ### 📸 Exemplo Visual do Projeto
 
 <div align="center">
-  <img src="docs/screenshots/home.png" alt="Homepage" width="80%" style="margin: 16px 0; border-radius: 10px;">
-  <img src="docs/screenshots/checkout.png" alt="Checkout" width="80%" style="margin: 16px 0; border-radius: 10px;">
+  <img src="https://github.com/user-attachments/assets/aefc9a29-6719-42a5-81b0-e055a3ae245b" 
+       alt="Homepage do NeoMercado" 
+       width="80%" 
+       style="margin: 16px 0; border-radius: 10px;">
 </div>
-
 ---
 
 ## ✔️ Técnicas e Tecnologias Utilizadas

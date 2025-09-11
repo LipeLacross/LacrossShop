@@ -1,5 +1,5 @@
 import Link from "next/link";
-import StatusClient from "./status-client";
+import StatusClient from "./StatusClient";
 
 export const dynamic = "force-dynamic";
 
