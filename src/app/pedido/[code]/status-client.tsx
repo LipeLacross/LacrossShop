@@ -88,8 +88,7 @@ export default function StatusClient({ code }: { code: string }) {
 
   if (error && !data)
     return (
-    return (
-        Falha ao consultar status: {error}
+      <div className="rounded border border-amber-300 bg-amber-50 p-4 text-amber-900 dark:border-amber-800 dark:bg-amber-900/20 dark:text-amber-200">
         Falha ao consultar status: {error}
       </div>
     );
